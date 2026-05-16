@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DomainForge — Domain Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#dc2626;--red2:#b91c1c;--red3:#fef2f2;--red4:#fecaca;--red5:#fee2e2;
+  --rose:#f43f5e;--white:#fff;--off:#fafafa;--f1:#f5f5f5;--f2:#efefef;
+  --gray:#6b7280;--gray2:#374151;--gray3:#1f2937;
+  --gold:#d97706;--gold2:#fef3c7;
+  --teal:#0d9488;--teal2:#ccfbf1;
+  --blue:#2563eb;--blue2:#dbeafe;
+  --green:#16a34a;--green2:#dcfce7;
+  --r:12px;--r2:8px;
+}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--f1);color:var(--gray3);overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--red4);border-radius:4px}
+
+/* ── SHELL ── */
+.shell{display:flex;min-height:100vh}
+.side{width:225px;flex-shrink:0;background:var(--white);border-right:2px solid var(--red5);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:200;transition:transform .3s;box-shadow:4px 0 20px rgba(220,38,38,.06)}
+.main{margin-left:225px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── LOGO ── */
+.logo{padding:18px 16px 15px;display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--red5)}
+.logo-ic{width:36px;height:36px;background:linear-gradient(135deg,var(--red),var(--rose));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 3px 10px rgba(220,38,38,.3)}
+.logo-tx{font-family:'Playfair Display',serif;font-weight:900;font-size:16px;color:var(--red);line-height:1}
+.logo-sub{font-size:9.5px;color:var(--gray);margin-top:2px;font-weight:500}
+
+/* ── NAV ── */
+.nav-sec{padding:10px 10px 2px}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--red4);text-transform:uppercase;padding:0 8px 6px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r2);cursor:pointer;font-size:13px;font-weight:500;color:var(--gray);transition:.15s;margin-bottom:2px;border:1.5px solid transparent;user-select:none}
+.ni:hover{background:var(--red3);color:var(--red)}
+.ni.on{background:var(--red);color:#fff;border-color:var(--red2);box-shadow:0 4px 12px rgba(220,38,38,.25)}
+.ni-ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.side-bot{margin-top:auto;padding:12px;border-top:2px solid var(--red5)}
+.lang-row{display:flex;gap:5px;margin-bottom:10px}
+.lng{flex:1;padding:7px;border-radius:6px;border:1.5px solid var(--red4);background:transparent;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--gray);transition:.15s;font-family:'Plus Jakarta Sans',sans-serif}
+.lng.on,.lng:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.usr-mini{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--r2);cursor:pointer;transition:.15s}
+.usr-mini:hover{background:var(--red3)}
+.usr-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--rose));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden}
+.usr-av img{width:100%;height:100%;object-fit:cover}
+.usr-nm{font-size:12px;font-weight:600;color:var(--gray3)}
+.usr-em{font-size:10px;color:var(--gray)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--white);border-bottom:2px solid var(--red5);padding:0 22px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(220,38,38,.05)}
+.srch-wrap{flex:1;max-width:440px;display:flex;align-items:center;gap:8px;background:var(--f1);border:1.5px solid var(--red4);border-radius:99px;padding:0 15px;transition:.2s}
+.srch-wrap:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.09)}
+.srch-wrap input{flex:1;background:none;border:none;outline:none;color:var(--gray3);font-size:13.5px;padding:9px 0;font-family:'Plus Jakarta Sans',sans-serif}
+.srch-wrap input::placeholder{color:var(--gray)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:6px;line-height:1}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 3px 12px rgba(220,38,38,.28)}
+.btn-red:hover{background:var(--red2);transform:translateY(-1px)}
+.btn-red:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-out{background:transparent;color:var(--red);border:1.5px solid var(--red4)}
+.btn-out:hover{background:var(--red3);border-color:var(--red)}
+.btn-gray{background:var(--f1);color:var(--gray2);border:1.5px solid var(--f2)}
+.btn-gray:hover{background:var(--f2)}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover{opacity:.88}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{opacity:.88}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{opacity:.88}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-xs{padding:4px 9px;font-size:11px}
+
+/* ── CONTENT ── */
+.content{padding:22px;flex:1}
+.page{display:none}.page.active{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ph{margin-bottom:22px}
+.pt{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--red);margin-bottom:4px}
+.ps{color:var(--gray);font-size:13.5px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;background:var(--white);border:1.5px solid var(--red4);color:var(--red);font-size:12.5px;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.15s}
+.back-btn:hover{background:var(--red3)}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1.5px solid var(--red5);border-radius:var(--r);padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.ct{font-family:'Playfair Display',serif;font-weight:700;font-size:14.5px;color:var(--gray3);margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ct a{font-size:12px;color:var(--red);font-weight:600;cursor:pointer;text-decoration:none;flex-shrink:0}
+.ct a:hover{text-decoration:underline}
+
+/* ── INPUT ── */
+.inp{width:100%;background:var(--f1);border:1.5px solid var(--red4);border-radius:var(--r2);padding:10px 14px;font-size:13.5px;color:var(--gray3);outline:none;transition:.2s;font-family:'Plus Jakarta Sans',sans-serif}
+.inp:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.08);background:#fff}
+.inp::placeholder{color:var(--gray)}
+select.inp{cursor:pointer}
+textarea.inp{resize:vertical;min-height:90px}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:13px}
+.mb{margin-bottom:14px}.mt{margin-top:14px}.gap14{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;align-items:flex-start}
+
+/* ── STAT ── */
+.stat{background:var(--white);border:1.5px solid var(--red5);border-radius:var(--r);padding:18px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:-12px;right:-12px;width:60px;height:60px;border-radius:50%;opacity:.07}
+.sc1::after{background:var(--red)}.sc2::after{background:var(--teal)}.sc3::after{background:var(--gold)}.sc4::after{background:var(--blue)}
+.s-ic{font-size:22px;margin-bottom:8px}
+.s-v{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--red);margin-bottom:2px}
+.s-l{font-size:11.5px;color:var(--gray);font-weight:500}
+.s-ch{font-size:11px;color:var(--teal);margin-top:5px;font-weight:600}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--gray);text-transform:uppercase;padding:9px 12px;background:var(--f1);border-bottom:2px solid var(--red5)}
+td{padding:10px 12px;border-bottom:1.5px solid var(--f2);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--red3)}
+
+/* ── TAG ── */
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10.5px;font-weight:700}
+.tag-red{background:var(--red4);color:var(--red2)}
+.tag-green{background:var(--green2);color:var(--green)}
+.tag-gold{background:var(--gold2);color:var(--gold)}
+.tag-blue{background:var(--blue2);color:var(--blue)}
+.tag-gray{background:var(--f2);color:var(--gray)}
+.tag-teal{background:var(--teal2);color:var(--teal)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;background:var(--f1);border:1.5px solid var(--red4);border-radius:99px;padding:3px;margin-bottom:16px;flex-wrap:wrap}
+.tab{flex:1;min-width:55px;text-align:center;padding:7px 8px;border-radius:99px;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray);transition:.15s;white-space:nowrap;user-select:none}
+.tab.on{background:var(--red);color:#fff;box-shadow:0 3px 9px rgba(220,38,38,.28)}
+
+/* ── SCORE RING ── */
+.ring-wrap{position:relative;width:80px;height:80px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--red)}
+.score-row-item{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px}
+.sc-lbl{color:var(--gray);width:90px;flex-shrink:0}
+.sc-bg{flex:1;height:5px;background:var(--f2);border-radius:99px}
+.sc-fill{height:100%;border-radius:99px;transition:width .6s}
+.sc-n{width:26px;text-align:right;font-weight:700;font-size:12px}
+
+/* ── RESULT GRID ── */
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.ri{background:var(--f1);border:1.5px solid var(--red5);border-radius:var(--r2);padding:12px}
+.ri-l{font-size:10px;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.ri-v{font-size:13.5px;font-weight:700;color:var(--gray3)}
+
+/* ── DOMAIN ROW ── */
+.dr{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--f1);border:1.5px solid var(--red5);border-radius:var(--r2);margin-bottom:7px;transition:.15s;cursor:pointer}
+.dr:hover{border-color:var(--red);background:var(--red3)}
+.dr-n{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:500;flex:1;color:var(--red2)}
+.dr-v{font-size:12px;color:var(--teal);font-weight:700}
+
+/* ── AI BOX ── */
+.ai-box{background:linear-gradient(135deg,#fff5f5,#fff);border:1.5px solid var(--red4);border-radius:var(--r);padding:15px;margin-top:12px}
+.ai-hd{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--red);margin-bottom:9px}
+.ai-txt{font-size:13px;color:var(--gray2);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+
+/* ── LOADING ── */
+.ld{display:flex;align-items:center;gap:9px;padding:16px;color:var(--gray);font-size:13px}
+.spin{width:17px;height:17px;border:2.5px solid var(--red4);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PROGRESS ── */
+.pb-wrap{margin-bottom:11px}
+.pb-lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--gray)}
+.pb{height:5px;background:var(--f2);border-radius:99px;overflow:hidden}
+.pb-f{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--red),var(--rose))}
+
+/* ── ALERT ── */
+.alert{display:flex;align-items:flex-start;gap:9px;padding:11px 15px;border-radius:var(--r2);margin-bottom:12px;font-size:13px;line-height:1.5}
+.alert-red{background:var(--red3);border:1.5px solid var(--red4);color:var(--red2)}
+.alert-green{background:var(--green2);border:1.5px solid #bbf7d0;color:var(--green)}
+.alert-gold{background:var(--gold2);border:1.5px solid #fde68a;color:var(--gold)}
+.alert-blue{background:var(--blue2);border:1.5px solid #bfdbfe;color:var(--blue)}
+
+/* ── MAPS LINK ── */
+.maps-link{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;border-radius:99px;font-weight:600;font-size:12.5px;text-decoration:none;box-shadow:0 3px 12px rgba(66,133,244,.28);transition:.2s}
+.maps-link:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ── EXTRACTOR ── */
+.ex-item{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--f1);border:1.5px solid var(--red4);border-radius:var(--r2);font-family:'DM Mono',monospace;font-size:12.5px;color:var(--red2);margin-bottom:6px;word-break:break-all}
+.ex-item .cbtn{margin-left:auto;padding:3px 9px;border-radius:6px;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0}
+.ex-count{background:var(--red);color:#fff;border-radius:99px;font-size:10.5px;padding:2px 8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;margin-left:8px}
+
+/* ── LOGIN ── */
+.login-overlay{position:fixed;inset:0;background:rgba(15,15,15,.55);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.login-box{background:var(--white);border-radius:18px;padding:36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(220,38,38,.15);border:1.5px solid var(--red4)}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo .logo-ic{width:52px;height:52px;font-size:24px;margin:0 auto 10px;border-radius:14px}
+.login-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--red);margin-bottom:4px;text-align:center}
+.login-sub{font-size:13px;color:var(--gray);text-align:center;margin-bottom:22px}
+.google-btn{width:100%;padding:11px;border-radius:99px;border:1.5px solid var(--f2);background:var(--white);cursor:pointer;font-size:14px;font-weight:600;color:var(--gray3);display:flex;align-items:center;justify-content:center;gap:10px;transition:.2s;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.google-btn:hover{border-color:var(--red4);background:var(--red3)}
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:16px;color:var(--gray);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--f2)}
+.inp-label{font-size:12px;font-weight:600;color:var(--gray2);margin-bottom:5px;display:block}
+.login-err{background:var(--red3);color:var(--red2);font-size:12.5px;padding:9px 12px;border-radius:var(--r2);margin-bottom:12px;border:1.5px solid var(--red4);display:none}
+
+/* ── ADMIN ── */
+.admin-gate{max-width:400px;margin:0 auto;padding:40px 0}
+
+/* ── TOOL GRID (dashboard) ── */
+.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.tool-card{background:var(--white);border:1.5px solid var(--red5);border-radius:var(--r);padding:20px;cursor:pointer;transition:.2s;text-align:center;user-select:none}
+.tool-card:hover{border-color:var(--red);box-shadow:0 8px 22px rgba(220,38,38,.12);transform:translateY(-3px)}
+.tc-ic{font-size:30px;margin-bottom:10px}
+.tc-name{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--gray3);margin-bottom:4px}
+.tc-desc{font-size:11.5px;color:var(--gray);line-height:1.5}
+
+/* ── SAVED ── */
+.saved-empty{text-align:center;padding:48px 20px;color:var(--gray)}
+.saved-empty .big-ic{font-size:48px;margin-bottom:12px}
+
+/* ── MONO ── */
+.mono{font-family:'DM Mono',monospace;font-size:12px}
+
+/* ── CHAT (full page) ── */
+.chat-area{background:var(--white);border:1.5px solid var(--red5);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;height:540px}
+.chat-msgs{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+.msg-wrap{display:flex;gap:8px;align-items:flex-end}
+.msg-wrap.u{flex-direction:row-reverse}
+.bbl{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6;max-width:70%;word-break:break-word}
+.bbl.b{background:var(--f1);border:1.5px solid var(--red5);border-radius:3px 12px 12px 12px;color:var(--gray3)}
+.bbl.u{background:var(--red);color:#fff;border-radius:12px 3px 12px 12px}
+.chat-footer{padding:11px;border-top:2px solid var(--red5);display:flex;gap:8px}
+.chat-footer input{flex:1;background:var(--f1);border:1.5px solid var(--red4);border-radius:99px;padding:9px 15px;font-size:13px;color:var(--gray3);outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s}
+.chat-footer input:focus{border-color:var(--red);background:#fff}
+.bot-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--rose));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+
+/* ── FLOATING CHATBOT ── */
+.chat-fab{position:fixed;bottom:22px;right:22px;z-index:300}
+.fab-btn{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--rose));border:none;cursor:pointer;font-size:21px;box-shadow:0 5px 18px rgba(220,38,38,.38);transition:.2s;display:flex;align-items:center;justify-content:center}
+.fab-btn:hover{transform:scale(1.1)}
+.fab-win{position:absolute;bottom:60px;right:0;width:310px;background:var(--white);border:2px solid var(--red4);border-radius:14px;overflow:hidden;box-shadow:0 14px 44px rgba(220,38,38,.13);display:none;flex-direction:column}
+.fab-win.open{display:flex}
+.fab-hd{padding:11px 14px;background:linear-gradient(135deg,var(--red),var(--rose));display:flex;align-items:center;gap:8px}
+.fab-av{width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:14px}
+.fab-nm{font-weight:700;font-size:12.5px;color:#fff}
+.fab-st{font-size:10px;color:rgba(255,255,255,.8)}
+.fab-msgs{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;min-height:180px;max-height:270px}
+.fab-inp{padding:9px;border-top:2px solid var(--red5);display:flex;gap:6px}
+.fab-inp input{flex:1;background:var(--f1);border:1.5px solid var(--red4);border-radius:99px;padding:7px 12px;font-size:12.5px;color:var(--gray3);outline:none;font-family:'Plus Jakarta Sans',sans-serif}
+.fab-inp input:focus{border-color:var(--red)}
+.fab-send{padding:7px 13px;border-radius:99px;background:var(--red);border:none;cursor:pointer;color:#fff;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ── RTL ── */
+[dir=rtl] .side{left:auto;right:0;border-right:none;border-left:2px solid var(--red5)}
+[dir=rtl] .main{margin-left:0;margin-right:225px}
+[dir=rtl] th,[dir=rtl] td{text-align:right}
+[dir=rtl] .tb-right{margin-left:0;margin-right:auto}
+[dir=rtl] .dr-n{direction:ltr}
+[dir=rtl] .chat-fab{right:auto;left:22px}
+[dir=rtl] .fab-win{right:auto;left:0}
+[dir=rtl] .ex-item .cbtn{margin-left:0;margin-right:auto}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .side{transform:translateX(-100%)}[dir=rtl] .side{transform:translateX(100%)}
+  .main{margin-left:0!important;margin-right:0!important}
+  .tools-grid,.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr}.rg{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN OVERLAY ═══════════════ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-ic" style="width:52px;height:52px;font-size:24px;margin:0 auto 10px;border-radius:14px;background:linear-gradient(135deg,#dc2626,#f43f5e);display:flex;align-items:center;justify-content:center">🔮</div>
+      <div class="login-title" id="lt">Sign in to DomainForge</div>
+      <div class="login-sub" id="ls">Access your domain intelligence platform</div>
+    </div>
+    <button class="google-btn" onclick="loginGoogle()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.5 24.5c0-1.5-.1-3-.4-4.5H24v8.5h12.1c-.5 2.8-2.1 5.1-4.5 6.7v5.5h7.2c4.2-3.9 6.7-9.6 6.7-16.2z"/><path fill="#34A853" d="M24 46c6.5 0 11.9-2.1 15.8-5.8l-7.2-5.5c-2.1 1.4-4.8 2.2-8.6 2.2-6.6 0-12.2-4.5-14.2-10.5H2.4v5.7C6.3 41.2 14.5 46 24 46z"/><path fill="#FBBC05" d="M9.8 26.4c-.5-1.5-.8-3.1-.8-4.7s.3-3.2.8-4.7v-5.7H2.4A22 22 0 0 0 2 24c0 3.5.9 6.9 2.4 9.7l7.4-7.3z"/><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.5 30.5 0 24 0 14.5 0 6.3 4.8 2.4 12.3l7.4 5.7C11.8 13.4 17.4 9.5 24 9.5z"/></svg>
+      <span id="gg">Continue with Google</span>
+    </button>
+    <div class="divider" id="or-div">or</div>
+    <div class="login-err" id="loginErr"></div>
+    <div style="margin-bottom:10px">
+      <label class="inp-label" id="em-lbl">Email</label>
+      <input class="inp" type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div style="margin-bottom:16px">
+      <label class="inp-label" id="pw-lbl">Password</label>
+      <input class="inp" type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-red" style="width:100%;padding:11px;justify-content:center" onclick="doLogin()" id="si-btn">Sign In</button>
+    <div style="text-align:center;margin-top:14px;font-size:12.5px;color:var(--gray)" id="no-acc">
+      Don't have an account? <a href="#" style="color:var(--red);font-weight:600" onclick="event.preventDefault();showSignup()" id="su-lnk">Sign Up</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<div class="shell">
+<nav class="side" id="sideNav">
+  <div class="logo">
+    <div class="logo-ic">🔮</div>
+    <div>
+      <div class="logo-tx" id="appName">DomainForge</div>
+      <div class="logo-sub">Domain Intelligence</div>
+    </div>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-lbl" id="nl1">Main</div>
+    <div class="ni on" onclick="goPage('dashboard')" id="ni-dashboard"><span class="ni-ic">⚡</span><span data-nav="dashboard">Dashboard</span></div>
+    <div class="ni" onclick="goPage('tools')" id="ni-tools"><span class="ni-ic">🔍</span><span data-nav="tools">Domain Tools</span></div>
+    <div class="ni" onclick="goPage('ai')" id="ni-ai"><span class="ni-ic">🤖</span><span data-nav="ai">AI Analysis</span></div>
+    <div class="ni" onclick="goPage('leads')" id="ni-leads"><span class="ni-ic">📧</span><span data-nav="leads">Lead Finder</span></div>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-lbl" id="nl2">Research</div>
+    <div class="ni" onclick="goPage('expired')" id="ni-expired"><span class="ni-ic">⏰</span><span data-nav="expired">Expired Domains</span></div>
+    <div class="ni" onclick="goPage('maps')" id="ni-maps"><span class="ni-ic">🗺️</span><span data-nav="maps">Google Maps</span></div>
+    <div class="ni" onclick="goPage('extractor')" id="ni-extractor"><span class="ni-ic">🔎</span><span data-nav="extractor">Page Extractor</span></div>
+    <div class="ni" onclick="goPage('chat')" id="ni-chat"><span class="ni-ic">💬</span><span data-nav="chat">AI Chat</span></div>
+    <div class="ni" onclick="goPage('saved')" id="ni-saved"><span class="ni-ic">⭐</span><span data-nav="saved">Saved Domains</span></div>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-lbl" id="nl3">System</div>
+    <div class="ni" onclick="goPage('admin')" id="ni-admin"><span class="ni-ic">🔐</span><span data-nav="admin">Admin Panel</span></div>
+  </div>
+
+  <div class="side-bot">
+    <div class="lang-row">
+      <button class="lng on" onclick="setLang('en')" id="lng-en">EN</button>
+      <button class="lng" onclick="setLang('ar')" id="lng-ar">عربي</button>
+      <button class="lng" onclick="setLang('fr')" id="lng-fr">FR</button>
+    </div>
+    <div class="usr-mini" onclick="logOut()">
+      <div class="usr-av" id="userAv">J</div>
+      <div>
+        <div class="usr-nm" id="userNm">John Investor</div>
+        <div class="usr-em" id="userEm">Sign Out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="srch-wrap">
+      <span style="color:var(--red)">🔍</span>
+      <input id="globalSearch" placeholder="Search domain, keyword..." onkeydown="if(event.key==='Enter'){document.getElementById('domainInput').value=this.value;goPage('tools');setTimeout(analyzeDomain,300)}">
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-red btn-sm" onclick="goPage('tools')" id="tb-analyze">+ Analyze Domain</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="ph">
+        <div class="pt" id="dsh-title">Welcome to DomainForge 👋</div>
+        <div class="ps" id="dsh-sub">Your AI-powered domain intelligence hub. Select a tool to get started.</div>
+      </div>
+      <div class="g4 mb">
+        <div class="stat sc1"><div class="s-ic">🌐</div><div class="s-v">247</div><div class="s-l" id="st1">Domains Analyzed</div><div class="s-ch">↑ +23 this week</div></div>
+        <div class="stat sc2"><div class="s-ic">📧</div><div class="s-v">1,832</div><div class="s-l" id="st2">Leads Found</div><div class="s-ch">↑ +156 this week</div></div>
+        <div class="stat sc3"><div class="s-ic">⭐</div><div class="s-v" id="savedCount">0</div><div class="s-l" id="st3">Saved Domains</div><div class="s-ch" id="st3b">Your watchlist</div></div>
+        <div class="stat sc4"><div class="s-ic">🤖</div><div class="s-v">312</div><div class="s-l" id="st4">AI Analyses</div><div class="s-ch">Today</div></div>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card" onclick="goPage('tools')"><div class="tc-ic">🔍</div><div class="tc-name" id="tc1">Domain Tools</div><div class="tc-desc">WHOIS · DNS · SEO · Availability</div></div>
+        <div class="tool-card" onclick="goPage('ai')"><div class="tc-ic">🤖</div><div class="tc-name" id="tc2">AI Analysis</div><div class="tc-desc">Evaluate, ideas, outreach emails</div></div>
+        <div class="tool-card" onclick="goPage('leads')"><div class="tc-ic">📧</div><div class="tc-name" id="tc3">Lead Finder</div><div class="tc-desc">Emails & phones from any domain</div></div>
+        <div class="tool-card" onclick="goPage('expired')"><div class="tc-ic">⏰</div><div class="tc-name" id="tc4">Expired Domains</div><div class="tc-desc">Find dropped domains with SEO value</div></div>
+        <div class="tool-card" onclick="goPage('maps')"><div class="tc-ic">🗺️</div><div class="tc-name" id="tc5">Google Maps</div><div class="tc-desc">Search businesses · extract contacts</div></div>
+        <div class="tool-card" onclick="goPage('extractor')"><div class="tc-ic">🔎</div><div class="tc-name" id="tc6">Page Extractor</div><div class="tc-desc">Extract emails & phones from any URL</div></div>
+        <div class="tool-card" onclick="goPage('saved')"><div class="tc-ic">⭐</div><div class="tc-name" id="tc7">Saved Domains</div><div class="tc-desc">Your domain watchlist & portfolio</div></div>
+        <div class="tool-card" onclick="goPage('chat')"><div class="tc-ic">💬</div><div class="tc-name" id="tc8">AI Assistant</div><div class="tc-desc">Domain investing Q&A with Claude</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ DOMAIN TOOLS ═══ -->
+    <div class="page" id="page-tools">
+      <button class="back-btn" onclick="goBack()" id="back-tools">← Back</button>
+      <div class="ph"><div class="pt" id="tools-title">Domain Research Tools</div><div class="ps" id="tools-sub">WHOIS · DNS · SEO · Availability — enter any domain</div></div>
+      <div class="card mb">
+        <div class="ct" id="tools-ct">Domain Analyzer</div>
+        <div class="row mb">
+          <input class="inp" id="domainInput" placeholder="example.com" style="font-family:'DM Mono',monospace" onkeydown="if(event.key==='Enter')analyzeDomain()">
+          <button class="btn btn-red" onclick="analyzeDomain()" id="analyzeBtn" style="flex-shrink:0">Analyze →</button>
+        </div>
+        <div class="ld" id="toolsLoading" style="display:none"><div class="spin"></div><span id="analyzing-txt">Analyzing domain...</span></div>
+
+        <div id="toolsResult" style="display:none">
+          <div class="tabs">
+            <div class="tab on" onclick="setToolTab(this,'tt-overview')" id="tab-overview">Overview</div>
+            <div class="tab" onclick="setToolTab(this,'tt-whois')" id="tab-whois">WHOIS</div>
+            <div class="tab" onclick="setToolTab(this,'tt-dns')" id="tab-dns">DNS</div>
+            <div class="tab" onclick="setToolTab(this,'tt-seo')" id="tab-seo">SEO</div>
+            <div class="tab" onclick="setToolTab(this,'tt-avail');checkAvail()" id="tab-avail">Availability</div>
+          </div>
+
+          <!-- OVERVIEW -->
+          <div id="tt-overview">
+            <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:16px;flex-wrap:wrap">
+              <div class="ring-wrap">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="34" stroke="#fee2e2" stroke-width="8" fill="none"/>
+                  <circle cx="40" cy="40" r="34" stroke="#dc2626" stroke-width="8" fill="none" id="scoreCircle" stroke-linecap="round"/>
+                </svg>
+                <div class="ring-num" id="scoreNum">0</div>
+              </div>
+              <div style="flex:1;min-width:200px">
+                <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:14px;margin-bottom:10px;color:var(--gray3)" id="scoreTitle">Investment Score</div>
+                <div id="scoreRows"></div>
+              </div>
+            </div>
+            <div class="rg mb" id="overviewGrid"></div>
+            <div id="aiAnalysisBox" style="display:none">
+              <div class="ai-box">
+                <div class="ai-hd">🤖 <span id="ai-analysis-lbl">Claude AI Analysis</span></div>
+                <div class="ld" id="aiLoading" style="display:none"><div class="spin"></div><span id="ai-thinking">AI is thinking...</span></div>
+                <div class="ai-txt" id="aiAnalysisTxt"></div>
+              </div>
+              <div style="margin-top:10px;display:flex;gap:8px">
+                <button class="btn btn-out btn-sm" onclick="saveDomainFromTool()" id="save-domain-btn">⭐ Save Domain</button>
+                <button class="btn btn-gray btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('aiAnalysisTxt').textContent)">📋 Copy AI Report</button>
+              </div>
+            </div>
+          </div>
+          <!-- WHOIS -->
+          <div id="tt-whois" style="display:none"><div class="rg" style="grid-template-columns:1fr 1fr" id="whoisGrid"></div></div>
+          <!-- DNS -->
+          <div id="tt-dns" style="display:none"><div class="tbl-wrap"><table><thead><tr><th>Type</th><th>Value</th><th>TTL</th></tr></thead><tbody id="dnsBody"></tbody></table></div></div>
+          <!-- SEO -->
+          <div id="tt-seo" style="display:none"><div class="rg" id="seoGrid"></div></div>
+          <!-- AVAILABILITY -->
+          <div id="tt-avail" style="display:none">
+            <div class="ld" id="availLoading" style="display:none"><div class="spin"></div>Checking TLDs...</div>
+            <div class="tbl-wrap" id="availTable" style="display:none">
+              <table><thead><tr><th>Domain</th><th>Status</th><th>Price</th><th></th></tr></thead><tbody id="availBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AI ANALYSIS ═══ -->
+    <div class="page" id="page-ai">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="ai-title">AI Analysis Suite</div><div class="ps" id="ai-sub">Powered by Claude — domain evaluation, ideas, outreach emails</div></div>
+      <div class="card">
+        <div class="tabs">
+          <div class="tab on" onclick="setAiMode(this,'evaluate')" id="ai-tab-evaluate">🎯 Evaluate</div>
+          <div class="tab" onclick="setAiMode(this,'ideas')" id="ai-tab-ideas">💡 Ideas</div>
+          <div class="tab" onclick="setAiMode(this,'email_gen')" id="ai-tab-email">✍️ Email</div>
+          <div class="tab" onclick="setAiMode(this,'buyers')" id="ai-tab-buyers">🎯 Buyers</div>
+          <div class="tab" onclick="setAiMode(this,'scam')" id="ai-tab-scam">🚨 Scam</div>
+        </div>
+        <input class="inp mb" id="aiInput" placeholder="Domain to evaluate (e.g. healthtech.ai)" onkeydown="if(event.key==='Enter')runAI()">
+        <input class="inp mb" id="aiInput2" placeholder="Target buyer industry (for Email mode)" style="display:none">
+        <button class="btn btn-red" onclick="runAI()" id="runAiBtn">Run AI →</button>
+        <div class="ld" id="aiPageLoading" style="display:none"><div class="spin"></div><span id="ai-thinking2">AI is thinking...</span></div>
+        <div id="aiPageResult" style="display:none">
+          <div class="ai-box">
+            <div class="ai-hd">🤖 Claude Analysis</div>
+            <div class="ai-txt" id="aiPageTxt"></div>
+          </div>
+          <button class="btn btn-gray btn-sm mt" onclick="navigator.clipboard.writeText(document.getElementById('aiPageTxt').textContent)">📋 Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LEAD FINDER ═══ -->
+    <div class="page" id="page-leads">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="leads-title">Lead Finder</div><div class="ps" id="leads-sub">Find emails & phone numbers from any company domain</div></div>
+      <div class="card mb">
+        <div class="ct" id="leads-ct">Email & Contact Finder</div>
+        <div class="row">
+          <input class="inp" id="leadInput" placeholder="stripe.com" style="font-family:'DM Mono',monospace" onkeydown="if(event.key==='Enter')findLeads()">
+          <button class="btn btn-red" onclick="findLeads()" style="flex-shrink:0" id="lead-search-btn">Search →</button>
+        </div>
+      </div>
+      <div class="ld" id="leadsLoading" style="display:none"><div class="spin"></div><span id="leads-searching">Searching contacts...</span></div>
+      <div class="card" id="leadsResult" style="display:none">
+        <div class="ct" id="leadsCt">Results <a onclick="exportLeadsCSV()" id="export-leads-btn">Export CSV ↓</a></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Title</th><th>Confidence</th><th>Action</th></tr></thead>
+          <tbody id="leadsBody"></tbody></table>
+        </div>
+      </div>
+      <div class="card mt" id="outreachResult" style="display:none">
+        <div class="ct" id="outreach-ct">Generated Outreach Email</div>
+        <div class="ld" id="outreachLoading" style="display:none"><div class="spin"></div></div>
+        <div class="ai-box" id="outreachBox" style="display:none">
+          <div class="ai-hd">✍️ Claude Email</div>
+          <div class="ai-txt" id="outreachTxt"></div>
+        </div>
+        <button class="btn btn-gray btn-sm mt" onclick="navigator.clipboard.writeText(document.getElementById('outreachTxt').textContent)" id="copy-email-btn">📋 Copy Email</button>
+      </div>
+    </div>
+
+    <!-- ═══ EXPIRED DOMAINS ═══ -->
+    <div class="page" id="page-expired">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="exp-title">Expired Domain Finder</div><div class="ps" id="exp-sub">Discover dropped domains with SEO value</div></div>
+      <div class="card mb">
+        <div class="ct" id="exp-ct">Filter Expired Domains</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end">
+          <div>
+            <div style="font-size:11px;color:var(--gray);margin-bottom:5px;font-weight:600" id="exp-tld-lbl">TLD</div>
+            <select class="inp" id="expTld"><option>.com</option><option>.io</option><option>.co</option><option>.ai</option><option>.app</option><option>.net</option><option>.org</option><option>.dev</option></select>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray);margin-bottom:5px;font-weight:600" id="exp-da-lbl">Min DA</div>
+            <input class="inp" id="expDA" value="20" placeholder="20">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray);margin-bottom:5px;font-weight:600" id="exp-kw-lbl">Keyword</div>
+            <input class="inp" id="expKw" placeholder="tech, ai, health...">
+          </div>
+          <button class="btn btn-red" onclick="searchExpired()" id="exp-search-btn">Search →</button>
+        </div>
+      </div>
+      <div class="ld" id="expLoading" style="display:none"><div class="spin"></div><span id="exp-searching">Searching...</span></div>
+      <div class="card" id="expResult" style="display:none">
+        <div class="ct" id="exp-results-ct">Results <a onclick="exportExpiredCSV()" id="exp-export-btn">Export CSV ↓</a></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Domain</th><th>DA</th><th>Age</th><th>Backlinks</th><th>AI Score</th><th>Est. Value</th><th>Dropped</th><th></th></tr></thead>
+          <tbody id="expBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ GOOGLE MAPS ═══ -->
+    <div class="page" id="page-maps">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="maps-title">Google Maps Business Search</div><div class="ps" id="maps-sub">Search businesses and extract contact information</div></div>
+      <div class="card mb">
+        <div class="ct" id="maps-ct">Business Search</div>
+        <div class="g2 mb">
+          <input class="inp" id="bizType" placeholder="dental clinic, law firm, restaurant..." onkeydown="if(event.key==='Enter')searchBiz()">
+          <input class="inp" id="bizCity" placeholder="New York, NY / Paris / Dubai..." onkeydown="if(event.key==='Enter')searchBiz()">
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-red" onclick="searchBiz()" id="maps-search-btn">Search →</button>
+          <a id="mapsDirectLink" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="maps-link">🗺️ Open Google Maps</a>
+        </div>
+      </div>
+      <div class="ld" id="mapsLoading" style="display:none"><div class="spin"></div><span id="maps-searching">Searching businesses...</span></div>
+      <div class="card" id="mapsResult" style="display:none">
+        <div class="ct" id="maps-results-ct">Results <a onclick="exportMapsCSV()" id="maps-export-btn">Export CSV ↓</a></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Business</th><th>Phone</th><th>Website</th><th>Email</th><th>Rating</th><th></th></tr></thead>
+          <tbody id="mapsBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE EXTRACTOR ═══ -->
+    <div class="page" id="page-extractor">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="ext-title">Page Email & Phone Extractor</div><div class="ps" id="ext-sub">Paste any URL or HTML — extract all emails and phone numbers instantly</div></div>
+      <div class="alert alert-gold">💡 <span id="ext-tip">Paste a website URL or copy-paste the page HTML source to extract all contacts instantly.</span></div>
+      <div class="card mb">
+        <div class="ct" id="ext-ct">Extractor</div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:600;color:var(--gray2);display:block;margin-bottom:5px" id="ext-url-lbl">Website URL</label>
+          <input class="inp" id="extUrl" placeholder="https://example.com/contact" style="font-family:'DM Mono',monospace">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="font-size:12px;font-weight:600;color:var(--gray2);display:block;margin-bottom:5px" id="ext-html-lbl">Or paste HTML source code</label>
+          <textarea class="inp" id="extHtml" placeholder='<html>...<a href="mailto:info@company.com">...</a>...<p>+1 (555) 123-4567</p>...</html>' rows="5"></textarea>
+        </div>
+        <button class="btn btn-red" onclick="runExtractor()" id="ext-btn">Extract →</button>
+      </div>
+      <div class="ld" id="extLoading" style="display:none"><div class="spin"></div><span id="ext-extracting">Extracting contacts...</span></div>
+      <div class="card" id="extResult" style="display:none">
+        <div class="ct" id="ext-results-ct">Extraction Results <a onclick="exportExtractorCSV()" id="ext-export-btn">Export CSV ↓</a></div>
+        <div id="extEmailSection" style="display:none">
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--gray3);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            📧 <span id="ext-emails-lbl">Emails Found</span><span class="ex-count" id="emailCount">0</span>
+          </div>
+          <div id="emailList"></div>
+        </div>
+        <div id="extPhoneSection" style="display:none">
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--gray3);margin:14px 0 10px;display:flex;align-items:center;gap:6px">
+            📞 <span id="ext-phones-lbl">Phone Numbers Found</span><span class="ex-count" id="phoneCount" style="background:var(--blue)">0</span>
+          </div>
+          <div id="phoneList"></div>
+        </div>
+        <div class="alert alert-red" id="extEmpty" style="display:none"><span id="ext-no-results">No emails or phone numbers found on this page.</span></div>
+        <div class="alert alert-green mt" id="extSuccess" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- ═══ AI CHAT ═══ -->
+    <div class="page" id="page-chat">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="chat-title">AI Domain Assistant</div><div class="ps" id="chat-sub">Ask anything about domains and investing — strictly domain topics only</div></div>
+      <div class="alert alert-blue">🤖 <span id="chat-notice">This assistant only answers domain-related questions: investing, valuation, WHOIS, SEO, outreach, expired domains, and more.</span></div>
+      <div class="chat-area">
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="msg-wrap">
+            <div class="bot-av">🤖</div>
+            <div class="bbl b" id="chat-welcome">Hello! I'm DomainForge AI. I can help you with domain investing, valuation, WHOIS lookups, expired domains, SEO analysis, and cold outreach strategies. What would you like to know?</div>
+          </div>
+        </div>
+        <div class="chat-footer">
+          <input id="chatInput" placeholder="Ask about domains, investing, valuations..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="btn btn-red btn-sm" onclick="sendChat()" id="chat-send-btn">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SAVED DOMAINS ═══ -->
+    <div class="page" id="page-saved">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="saved-title">Saved Domains</div><div class="ps" id="saved-sub">Your domain watchlist and portfolio</div></div>
+      <div class="card">
+        <div class="ct" id="saved-ct">Portfolio <a onclick="exportSavedCSV()" id="saved-export-btn">Export CSV ↓</a></div>
+        <div id="savedList"></div>
+        <div id="savedEmpty" class="saved-empty" style="display:none">
+          <div class="big-ic">⭐</div>
+          <div style="font-weight:600;margin-bottom:6px" id="saved-empty-txt">No saved domains yet</div>
+          <div style="font-size:13px;color:var(--gray)" id="saved-empty-sub">Analyze a domain and click "Save Domain" to add it here</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN PANEL ═══ -->
+    <div class="page" id="page-admin">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="ph"><div class="pt" id="admin-title">Admin Panel</div><div class="ps" id="admin-sub">Platform management and analytics</div></div>
+
+      <!-- GATE -->
+      <div id="adminGate" class="admin-gate">
+        <div class="card">
+          <div class="ct" id="admin-gate-ct">🔐 Admin Access</div>
+          <div class="alert alert-red mb" id="adminErr" style="display:none">⚠️ <span id="admin-wrong-pass">Incorrect password</span></div>
+          <label style="font-size:12px;font-weight:600;color:var(--gray2);display:block;margin-bottom:6px" id="admin-pass-lbl">Admin Password</label>
+          <input class="inp mb" type="password" id="adminPassInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkAdmin()">
+          <button class="btn btn-red" style="width:100%;justify-content:center" onclick="checkAdmin()" id="admin-enter-btn">Enter Admin Panel →</button>
+          <div style="margin-top:12px;font-size:12px;color:var(--gray);text-align:center" id="admin-hint">Default password: <strong>admin123</strong></div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="adminDashboard" style="display:none">
+        <div class="g4 mb">
+          <div class="stat sc1"><div class="s-ic">👤</div><div class="s-v" id="adm-users">1</div><div class="s-l" id="adm-users-lbl">Total Users</div></div>
+          <div class="stat sc2"><div class="s-ic">🔍</div><div class="s-v" id="adm-searches">247</div><div class="s-l" id="adm-searches-lbl">Total Searches</div></div>
+          <div class="stat sc3"><div class="s-ic">⭐</div><div class="s-v" id="adm-saved">0</div><div class="s-l" id="adm-saved-lbl">Domains Saved</div></div>
+          <div class="stat sc4"><div class="s-ic">🤖</div><div class="s-v">312</div><div class="s-l" id="adm-ai-lbl">AI Calls Today</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="ct" id="adm-users-title">Registered Users</div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Status</th></tr></thead>
+              <tbody id="adminUsersBody"></tbody>
+            </table></div>
+          </div>
+          <div class="card">
+            <div class="ct" id="adm-activity-title">Recent Activity</div>
+            <div id="adminActivity"></div>
+          </div>
+        </div>
+        <div class="card mt">
+          <div class="ct" id="adm-saved-title">All Saved Domains</div>
+          <div id="adminSavedDomains"></div>
+        </div>
+        <div style="margin-top:14px;text-align:right">
+          <button class="btn btn-out btn-sm" onclick="lockAdmin()" id="adm-logout-btn">🔒 Lock Admin</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ═══════════════ FLOATING CHATBOT ═══════════════ -->
+<div class="chat-fab">
+  <div class="fab-win" id="fabWin">
+    <div class="fab-hd">
+      <div class="fab-av">🤖</div>
+      <div>
+        <div class="fab-nm">DomainForge AI</div>
+        <div class="fab-st">● Claude Powered</div>
+      </div>
+      <div style="margin-left:auto;cursor:pointer;color:rgba(255,255,255,.8);font-size:15px" onclick="toggleFab()">✕</div>
+    </div>
+    <div class="fab-msgs" id="fabMsgs">
+      <div class="msg-wrap"><div class="bot-av" style="width:26px;height:26px;font-size:12px">🤖</div><div class="bbl b" id="fab-welcome">Hi! Ask me anything about domain investing 🔮</div></div>
+    </div>
+    <div class="fab-inp">
+      <input id="fabInput" placeholder="Domain question..." onkeydown="if(event.key==='Enter')sendFab()">
+      <button class="fab-send" onclick="sendFab()" id="fab-send-btn">→</button>
+    </div>
+  </div>
+  <button class="fab-btn" onclick="toggleFab()">🤖</button>
+</div>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+// ── STATE ──────────────────────────────────────────────────────────
+let currentPage = 'dashboard';
+let pageHistory = [];
+let currentLang = 'en';
+let currentUser = null;
+let savedDomains = JSON.parse(localStorage.getItem('df_saved') || '[]');
+let lastAnalyzedDomain = '';
+let lastAnalyzedData = null;
+let aiMode = 'evaluate';
+let adminUnlocked = false;
+let fabOpen = false;
+
+// ── TRANSLATIONS ───────────────────────────────────────────────────
+const TR = {
+  en: {
+    dir:'ltr',
+    appName:'DomainForge',
+    back:'← Back',
+    nl1:'Main', nl2:'Research', nl3:'System',
+    nav:{ dashboard:'Dashboard', tools:'Domain Tools', ai:'AI Analysis', leads:'Lead Finder',
+          expired:'Expired Domains', maps:'Google Maps', extractor:'Page Extractor',
+          chat:'AI Chat', saved:'Saved Domains', admin:'Admin Panel' },
+    search_ph:'Search domain, keyword...',
+    tb_analyze:'+ Analyze Domain',
+    dsh_title:'Welcome to DomainForge 👋',
+    dsh_sub:'Your AI-powered domain intelligence hub. Select a tool to get started.',
+    st1:'Domains Analyzed', st2:'Leads Found', st3:'Saved Domains', st3b:'Your watchlist', st4:'AI Analyses',
+    tc1:'Domain Tools', tc2:'AI Analysis', tc3:'Lead Finder', tc4:'Expired Domains',
+    tc5:'Google Maps', tc6:'Page Extractor', tc7:'Saved Domains', tc8:'AI Assistant',
+    tools_title:'Domain Research Tools', tools_sub:'WHOIS · DNS · SEO · Availability — enter any domain',
+    tools_ct:'Domain Analyzer', analyzing:'Analyzing domain...',
+    tab_overview:'Overview', tab_whois:'WHOIS', tab_dns:'DNS', tab_seo:'SEO', tab_avail:'Availability',
+    analyze_btn:'Analyze →',
+    ai_title:'AI Analysis Suite', ai_sub:'Powered by Claude — evaluation, ideas, outreach emails',
+    ai_tab_evaluate:'🎯 Evaluate', ai_tab_ideas:'💡 Ideas', ai_tab_email:'✍️ Email',
+    ai_tab_buyers:'🎯 Buyers', ai_tab_scam:'🚨 Scam',
+    ai_input_ph:{ evaluate:'Domain to evaluate (e.g. healthtech.ai)', ideas:'Industry or keyword (e.g. fintech, wellness)',
+      email_gen:'Domain you\'re selling (e.g. cryptovault.io)', buyers:'Your domain (e.g. aifinance.com)', scam:'Domain to check for spam risk' },
+    ai_input2_ph:'Target buyer industry (for Email mode)',
+    run_ai_btn:'Run AI →', ai_thinking:'AI is thinking...',
+    ai_analysis:'Claude AI Analysis',
+    save_btn:'⭐ Save Domain', copy_btn:'📋 Copy AI Report',
+    leads_title:'Lead Finder', leads_sub:'Find emails & phone numbers from any company domain',
+    leads_ct:'Email & Contact Finder', leads_search_ph:'stripe.com', leads_search_btn:'Search →',
+    leads_searching:'Searching contacts...', export_leads:'Export CSV ↓',
+    outreach_ct:'Generated Outreach Email', copy_email:'📋 Copy Email',
+    exp_title:'Expired Domain Finder', exp_sub:'Discover dropped domains with SEO value',
+    exp_ct:'Filter Expired Domains', exp_tld:'TLD', exp_da:'Min DA', exp_kw:'Keyword',
+    exp_search_btn:'Search →', exp_searching:'Searching...', exp_export:'Export CSV ↓',
+    exp_results_ct:'Results',
+    maps_title:'Google Maps Business Search', maps_sub:'Search businesses and extract contact information',
+    maps_ct:'Business Search', maps_biz_ph:'dental clinic, law firm, restaurant...',
+    maps_city_ph:'New York, NY / Paris / Dubai...', maps_search_btn:'Search →',
+    maps_link:'🗺️ Open Google Maps', maps_searching:'Searching businesses...', maps_export:'Export CSV ↓',
+    ext_title:'Page Email & Phone Extractor', ext_sub:'Paste any URL or HTML — extract all emails and phone numbers instantly',
+    ext_tip:'Paste a website URL or HTML source to extract all contacts instantly.',
+    ext_ct:'Extractor', ext_url_lbl:'Website URL', ext_html_lbl:'Or paste HTML source code',
+    ext_btn:'Extract →', ext_extracting:'Extracting contacts...',
+    ext_emails:'Emails Found', ext_phones:'Phone Numbers Found',
+    ext_no_results:'No emails or phone numbers found on this page.',
+    ext_export:'Export CSV ↓',
+    chat_title:'AI Domain Assistant', chat_sub:'Ask anything about domains — strictly domain topics only',
+    chat_notice:'This assistant only answers domain-related questions.',
+    chat_welcome:'Hello! I\'m DomainForge AI. I can help you with domain investing, valuation, WHOIS, expired domains, SEO, and outreach strategies.',
+    chat_ph:'Ask about domains, investing, valuations...', chat_send:'Send',
+    saved_title:'Saved Domains', saved_sub:'Your domain watchlist and portfolio',
+    saved_ct:'Portfolio', saved_export:'Export CSV ↓',
+    saved_empty:'No saved domains yet', saved_empty_sub:'Analyze a domain and click "Save Domain" to add it here',
+    saved_remove:'Remove', saved_analyze:'Analyze Again',
+    admin_title:'Admin Panel', admin_sub:'Platform management and analytics',
+    admin_gate_ct:'🔐 Admin Access', admin_wrong:'Incorrect password',
+    admin_pass_lbl:'Admin Password', admin_enter_btn:'Enter Admin Panel →',
+    admin_hint:'Default password:', admin_users:'Total Users',
+    admin_searches:'Total Searches', admin_saved:'Domains Saved', admin_ai:'AI Calls Today',
+    admin_users_title:'Registered Users', admin_activity:'Recent Activity',
+    admin_saved_title:'All Saved Domains', admin_logout:'🔒 Lock Admin',
+    lt:'Sign in to DomainForge', ls:'Access your domain intelligence platform',
+    gg:'Continue with Google', em_lbl:'Email', pw_lbl:'Password',
+    si_btn:'Sign In', no_acc:"Don't have an account?", su_lnk:'Sign Up',
+    fab_welcome:'Hi! Ask me anything about domain investing 🔮',
+    fab_ph:'Domain question...',
+    score_title:'Investment Score',
+    age:'Age', registrar:'Registrar', expires:'Expires', da:'DA Score',
+    backlinks:'Backlinks', dnssec:'DNSSEC', country:'Country', status:'Status',
+    brandability:'Brandability', seo_value:'SEO Value', keyword:'Keyword Power', resale:'Resale Potential',
+    available:'Available', taken:'Taken',
+    logout:'Sign Out',
+  },
+  ar: {
+    dir:'rtl',
+    appName:'دومين فورج',
+    back:'رجوع →',
+    nl1:'الأدوات الرئيسية', nl2:'بحث متقدم', nl3:'النظام',
+    nav:{ dashboard:'الرئيسية', tools:'أدوات النطاقات', ai:'تحليل AI', leads:'البحث عن عملاء',
+          expired:'النطاقات المنتهية', maps:'خرائط جوجل', extractor:'استخراج بيانات',
+          chat:'مساعد AI', saved:'النطاقات المحفوظة', admin:'لوحة الإدارة' },
+    search_ph:'ابحث عن نطاق، كلمة مفتاحية...',
+    tb_analyze:'+ تحليل نطاق',
+    dsh_title:'مرحباً بك في دومين فورج 👋',
+    dsh_sub:'مركز ذكاء النطاقات. اختر أداة للبدء.',
+    st1:'نطاقات محللة', st2:'عملاء محتملون', st3:'نطاقات محفوظة', st3b:'قائمة المراقبة', st4:'تحليلات AI',
+    tc1:'أدوات النطاقات', tc2:'تحليل AI', tc3:'البحث عن عملاء', tc4:'النطاقات المنتهية',
+    tc5:'خرائط جوجل', tc6:'استخراج بيانات', tc7:'النطاقات المحفوظة', tc8:'مساعد AI',
+    tools_title:'أدوات بحث النطاقات', tools_sub:'WHOIS · DNS · SEO · التوفر — أدخل أي نطاق',
+    tools_ct:'محلل النطاقات', analyzing:'جارٍ التحليل...',
+    tab_overview:'نظرة عامة', tab_whois:'WHOIS', tab_dns:'DNS', tab_seo:'SEO', tab_avail:'التوفر',
+    analyze_btn:'تحليل ←',
+    ai_title:'مجموعة تحليل الذكاء الاصطناعي', ai_sub:'مدعوم بـ Claude — تقييم، أفكار، إيميلات تسويقية',
+    ai_tab_evaluate:'🎯 تقييم', ai_tab_ideas:'💡 أفكار', ai_tab_email:'✍️ إيميل',
+    ai_tab_buyers:'🎯 مشترون', ai_tab_scam:'🚨 فحص Scam',
+    ai_input_ph:{ evaluate:'النطاق المراد تقييمه (مثال: healthtech.ai)', ideas:'الصناعة / الكلمة المفتاحية (مثال: تقنية، صحة)',
+      email_gen:'النطاق الذي تبيعه', buyers:'نطاقك (مثال: aifinance.com)', scam:'النطاق للفحص' },
+    ai_input2_ph:'نوع المشتري المستهدف',
+    run_ai_btn:'تشغيل AI ←', ai_thinking:'AI يفكر...',
+    ai_analysis:'تحليل Claude AI',
+    save_btn:'⭐ حفظ النطاق', copy_btn:'📋 نسخ التقرير',
+    leads_title:'البحث عن عملاء', leads_sub:'ابحث عن إيميلات وأرقام هاتف من أي نطاق',
+    leads_ct:'البحث عن جهات الاتصال', leads_search_ph:'stripe.com', leads_search_btn:'بحث ←',
+    leads_searching:'جارٍ البحث عن جهات الاتصال...', export_leads:'تصدير CSV ↓',
+    outreach_ct:'الإيميل التسويقي المولّد', copy_email:'📋 نسخ الإيميل',
+    exp_title:'النطاقات المنتهية الصلاحية', exp_sub:'اكتشف النطاقات المنتهية ذات القيمة SEO',
+    exp_ct:'تصفية النطاقات المنتهية', exp_tld:'اللاحقة', exp_da:'الحد الأدنى DA', exp_kw:'الكلمة المفتاحية',
+    exp_search_btn:'بحث ←', exp_searching:'جارٍ البحث...', exp_export:'تصدير CSV ↓',
+    exp_results_ct:'النتائج',
+    maps_title:'البحث على خرائط جوجل', maps_sub:'ابحث عن الشركات واستخرج معلومات الاتصال',
+    maps_ct:'بحث عن الأعمال', maps_biz_ph:'عيادة أسنان، مكتب محاماة، مطعم...',
+    maps_city_ph:'نيويورك / باريس / دبي...', maps_search_btn:'بحث ←',
+    maps_link:'🗺️ فتح خرائط جوجل', maps_searching:'جارٍ البحث عن الأعمال...', maps_export:'تصدير CSV ↓',
+    ext_title:'استخراج الإيميلات والأرقام', ext_sub:'الصق أي رابط أو HTML — استخرج جميع الإيميلات وأرقام الهاتف فوراً',
+    ext_tip:'الصق رابط الموقع أو كود HTML لاستخراج جميع جهات الاتصال فوراً.',
+    ext_ct:'الاستخراج', ext_url_lbl:'رابط الموقع', ext_html_lbl:'أو الصق كود HTML',
+    ext_btn:'استخراج ←', ext_extracting:'جارٍ الاستخراج...',
+    ext_emails:'إيميلات موجودة', ext_phones:'أرقام هاتف موجودة',
+    ext_no_results:'لم يتم العثور على إيميلات أو أرقام في هذه الصفحة.',
+    ext_export:'تصدير CSV ↓',
+    chat_title:'مساعد الذكاء الاصطناعي للنطاقات', chat_sub:'اسأل أي شيء عن النطاقات — حصرياً لمواضيع النطاقات',
+    chat_notice:'هذا المساعد يجيب فقط على أسئلة النطاقات.',
+    chat_welcome:'مرحباً! أنا DomainForge AI. يمكنني مساعدتك في استثمار النطاقات، التقييم، WHOIS، النطاقات المنتهية، SEO، وإستراتيجيات التسويق.',
+    chat_ph:'اسأل عن النطاقات، الاستثمار، التقييم...', chat_send:'إرسال',
+    saved_title:'النطاقات المحفوظة', saved_sub:'قائمة المراقبة والمحفظة الخاصة بك',
+    saved_ct:'المحفظة', saved_export:'تصدير CSV ↓',
+    saved_empty:'لا توجد نطاقات محفوظة بعد', saved_empty_sub:'حلل نطاقاً واضغط "حفظ النطاق" لإضافته هنا',
+    saved_remove:'حذف', saved_analyze:'تحليل مجدداً',
+    admin_title:'لوحة الإدارة', admin_sub:'إدارة المنصة والإحصائيات',
+    admin_gate_ct:'🔐 دخول المسؤول', admin_wrong:'كلمة المرور غير صحيحة',
+    admin_pass_lbl:'كلمة مرور المسؤول', admin_enter_btn:'الدخول إلى لوحة الإدارة ←',
+    admin_hint:'كلمة المرور الافتراضية:', admin_users:'إجمالي المستخدمين',
+    admin_searches:'إجمالي البحوث', admin_saved:'النطاقات المحفوظة', admin_ai:'استدعاءات AI اليوم',
+    admin_users_title:'المستخدمون المسجلون', admin_activity:'النشاط الأخير',
+    admin_saved_title:'جميع النطاقات المحفوظة', admin_logout:'🔒 قفل لوحة الإدارة',
+    lt:'تسجيل الدخول إلى دومين فورج', ls:'ادخل إلى منصة ذكاء النطاقات',
+    gg:'الدخول بجوجل', em_lbl:'البريد الإلكتروني', pw_lbl:'كلمة المرور',
+    si_btn:'تسجيل الدخول', no_acc:'ليس لديك حساب؟', su_lnk:'إنشاء حساب',
+    fab_welcome:'مرحباً! اسألني أي شيء عن استثمار النطاقات 🔮',
+    fab_ph:'سؤال عن النطاقات...',
+    score_title:'نقاط الاستثمار',
+    age:'العمر', registrar:'المسجِّل', expires:'ينتهي في', da:'نقاط DA',
+    backlinks:'الروابط الخلفية', dnssec:'DNSSEC', country:'الدولة', status:'الحالة',
+    brandability:'قابلية العلامة', seo_value:'قيمة SEO', keyword:'قوة الكلمة', resale:'إمكانية البيع',
+    available:'متاح', taken:'محجوز',
+    logout:'تسجيل الخروج',
+  },
+  fr: {
+    dir:'ltr',
+    appName:'DomainForge',
+    back:'← Retour',
+    nl1:'Outils Principaux', nl2:'Recherche', nl3:'Système',
+    nav:{ dashboard:'Tableau de bord', tools:'Outils Domaines', ai:'Analyse IA', leads:'Chercher Leads',
+          expired:'Domaines Expirés', maps:'Google Maps', extractor:'Extracteur', chat:'Assistant IA',
+          saved:'Domaines Sauvegardés', admin:'Panneau Admin' },
+    search_ph:'Rechercher domaine, mot-clé...',
+    tb_analyze:'+ Analyser Domaine',
+    dsh_title:'Bienvenue sur DomainForge 👋',
+    dsh_sub:'Votre hub d\'intelligence de domaines. Sélectionnez un outil.',
+    st1:'Domaines Analysés', st2:'Leads Trouvés', st3:'Domaines Sauvés', st3b:'Votre watchlist', st4:'Analyses IA',
+    tc1:'Outils Domaines', tc2:'Analyse IA', tc3:'Chercher Leads', tc4:'Domaines Expirés',
+    tc5:'Google Maps', tc6:'Extracteur', tc7:'Domaines Sauvés', tc8:'Assistant IA',
+    tools_title:'Outils de Recherche de Domaines', tools_sub:'WHOIS · DNS · SEO · Disponibilité — entrez n\'importe quel domaine',
+    tools_ct:'Analyseur de Domaines', analyzing:'Analyse en cours...',
+    tab_overview:'Vue d\'ensemble', tab_whois:'WHOIS', tab_dns:'DNS', tab_seo:'SEO', tab_avail:'Disponibilité',
+    analyze_btn:'Analyser →',
+    ai_title:'Suite d\'Analyse IA', ai_sub:'Propulsé par Claude — évaluation, idées, emails de prospection',
+    ai_tab_evaluate:'🎯 Évaluer', ai_tab_ideas:'💡 Idées', ai_tab_email:'✍️ Email',
+    ai_tab_buyers:'🎯 Acheteurs', ai_tab_scam:'🚨 Spam',
+    ai_input_ph:{ evaluate:'Domaine à évaluer (ex: healthtech.ai)', ideas:'Secteur ou mot-clé (ex: fintech, santé)',
+      email_gen:'Domaine que vous vendez', buyers:'Votre domaine (ex: aifinance.com)', scam:'Domaine à vérifier' },
+    ai_input2_ph:'Secteur de l\'acheteur cible',
+    run_ai_btn:'Lancer IA →', ai_thinking:'L\'IA réfléchit...',
+    ai_analysis:'Analyse Claude IA',
+    save_btn:'⭐ Sauvegarder', copy_btn:'📋 Copier le Rapport',
+    leads_title:'Chercheur de Leads', leads_sub:'Trouvez emails & téléphones depuis n\'importe quel domaine',
+    leads_ct:'Recherche de Contacts', leads_search_ph:'stripe.com', leads_search_btn:'Rechercher →',
+    leads_searching:'Recherche de contacts...', export_leads:'Exporter CSV ↓',
+    outreach_ct:'Email de Prospection Généré', copy_email:'📋 Copier l\'Email',
+    exp_title:'Domaines Expirés', exp_sub:'Découvrez les domaines abandonnés avec valeur SEO',
+    exp_ct:'Filtrer les Domaines Expirés', exp_tld:'Extension', exp_da:'DA Minimum', exp_kw:'Mot-clé',
+    exp_search_btn:'Rechercher →', exp_searching:'Recherche...', exp_export:'Exporter CSV ↓',
+    exp_results_ct:'Résultats',
+    maps_title:'Recherche Google Maps', maps_sub:'Recherchez des entreprises et extrayez leurs coordonnées',
+    maps_ct:'Recherche d\'Entreprises', maps_biz_ph:'cabinet dentaire, cabinet juridique...',
+    maps_city_ph:'Paris / New York / Dubai...', maps_search_btn:'Rechercher →',
+    maps_link:'🗺️ Ouvrir Google Maps', maps_searching:'Recherche d\'entreprises...', maps_export:'Exporter CSV ↓',
+    ext_title:'Extracteur d\'Emails & Téléphones', ext_sub:'Collez une URL ou du HTML — extrayez tous les emails et numéros',
+    ext_tip:'Collez une URL ou le code HTML source pour extraire tous les contacts instantanément.',
+    ext_ct:'Extracteur', ext_url_lbl:'URL du Site Web', ext_html_lbl:'Ou collez le code HTML source',
+    ext_btn:'Extraire →', ext_extracting:'Extraction en cours...',
+    ext_emails:'Emails Trouvés', ext_phones:'Numéros Trouvés',
+    ext_no_results:'Aucun email ou numéro de téléphone trouvé.',
+    ext_export:'Exporter CSV ↓',
+    chat_title:'Assistant IA Domaines', chat_sub:'Posez des questions sur les domaines — sujets domaines uniquement',
+    chat_notice:'Cet assistant ne répond qu\'aux questions sur les domaines.',
+    chat_welcome:'Bonjour ! Je suis DomainForge AI. Je peux vous aider avec l\'investissement en domaines, la valorisation, WHOIS, les domaines expirés et les stratégies de prospection.',
+    chat_ph:'Posez vos questions sur les domaines...', chat_send:'Envoyer',
+    saved_title:'Domaines Sauvegardés', saved_sub:'Votre watchlist et portefeuille de domaines',
+    saved_ct:'Portefeuille', saved_export:'Exporter CSV ↓',
+    saved_empty:'Aucun domaine sauvegardé', saved_empty_sub:'Analysez un domaine et cliquez "Sauvegarder" pour l\'ajouter',
+    saved_remove:'Supprimer', saved_analyze:'Analyser à nouveau',
+    admin_title:'Panneau Admin', admin_sub:'Gestion de la plateforme et analytiques',
+    admin_gate_ct:'🔐 Accès Admin', admin_wrong:'Mot de passe incorrect',
+    admin_pass_lbl:'Mot de passe Admin', admin_enter_btn:'Entrer dans le Panneau Admin →',
+    admin_hint:'Mot de passe par défaut:', admin_users:'Utilisateurs Totaux',
+    admin_searches:'Recherches Totales', admin_saved:'Domaines Sauvés', admin_ai:'Appels IA Aujourd\'hui',
+    admin_users_title:'Utilisateurs Enregistrés', admin_activity:'Activité Récente',
+    admin_saved_title:'Tous les Domaines Sauvegardés', admin_logout:'🔒 Verrouiller Admin',
+    lt:'Connexion à DomainForge', ls:'Accédez à votre plateforme d\'intelligence de domaines',
+    gg:'Continuer avec Google', em_lbl:'Email', pw_lbl:'Mot de passe',
+    si_btn:'Se Connecter', no_acc:'Pas encore de compte ?', su_lnk:'S\'inscrire',
+    fab_welcome:'Bonjour ! Posez-moi des questions sur l\'investissement en domaines 🔮',
+    fab_ph:'Question sur les domaines...',
+    score_title:'Score d\'Investissement',
+    age:'Âge', registrar:'Registraire', expires:'Expire le', da:'Score DA',
+    backlinks:'Backlinks', dnssec:'DNSSEC', country:'Pays', status:'Statut',
+    brandability:'Brandabilité', seo_value:'Valeur SEO', keyword:'Puissance Mot-clé', resale:'Potentiel Revente',
+    available:'Disponible', taken:'Pris',
+    logout:'Se Déconnecter',
+  }
+};
+
+// ── HELPERS ────────────────────────────────────────────────────────
+const rnd = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const pick = arr => arr[rnd(0,arr.length-1)];
+const t = () => TR[currentLang];
+const $ = id => document.getElementById(id);
+const show = id => { const e=$( id); if(e) e.style.display=''; };
+const hide = id => { const e=$(id); if(e) e.style.display='none'; };
+const showFlex = id => { const e=$(id); if(e) e.style.display='flex'; };
+
+// ── LANG ───────────────────────────────────────────────────────────
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = TR[lang].dir;
+  ['en','ar','fr'].forEach(l => {
+    const el = $('lng-'+l);
+    if(el) { el.classList.toggle('on', l===lang); }
+  });
+  applyTranslations();
+}
+
+function applyTranslations() {
+  const tr = t();
+  // Sidebar
+  $('appName').textContent = tr.appName;
+  $('nl1').textContent = tr.nl1;
+  $('nl2').textContent = tr.nl2;
+  $('nl3').textContent = tr.nl3;
+  Object.entries(tr.nav).forEach(([k,v]) => {
+    const el = document.querySelector(`[data-nav="${k}"]`);
+    if(el) el.textContent = v;
+  });
+  // User
+  $('userEm').textContent = tr.logout;
+  // Topbar
+  $('globalSearch').placeholder = tr.search_ph;
+  $('tb-analyze').textContent = tr.tb_analyze;
+  // Dashboard
+  $('dsh-title').textContent = tr.dsh_title;
+  $('dsh-sub').textContent = tr.dsh_sub;
+  $('st1').textContent = tr.st1; $('st2').textContent = tr.st2;
+  $('st3').textContent = tr.st3; $('st3b').textContent = tr.st3b; $('st4').textContent = tr.st4;
+  $('tc1').textContent = tr.tc1; $('tc2').textContent = tr.tc2; $('tc3').textContent = tr.tc3;
+  $('tc4').textContent = tr.tc4; $('tc5').textContent = tr.tc5; $('tc6').textContent = tr.tc6;
+  $('tc7').textContent = tr.tc7; $('tc8').textContent = tr.tc8;
+  // Back buttons
+  document.querySelectorAll('.back-btn').forEach(b => b.textContent = tr.back);
+  // Tools
+  $('tools-title').textContent = tr.tools_title; $('tools-sub').textContent = tr.tools_sub;
+  $('tools-ct').textContent = tr.tools_ct; $('analyzing-txt').textContent = tr.analyzing;
+  $('analyzeBtn').textContent = tr.analyze_btn;
+  $('tab-overview').textContent = tr.tab_overview; $('tab-whois').textContent = tr.tab_whois;
+  $('tab-dns').textContent = tr.tab_dns; $('tab-seo').textContent = tr.tab_seo; $('tab-avail').textContent = tr.tab_avail;
+  $('ai-analysis-lbl').textContent = tr.ai_analysis;
+  $('ai-thinking').textContent = tr.ai_thinking;
+  if($('save-domain-btn')) $('save-domain-btn').textContent = tr.save_btn;
+  // AI
+  $('ai-title').textContent = tr.ai_title; $('ai-sub').textContent = tr.ai_sub;
+  $('ai-tab-evaluate').textContent = tr.ai_tab_evaluate; $('ai-tab-ideas').textContent = tr.ai_tab_ideas;
+  $('ai-tab-email').textContent = tr.ai_tab_email; $('ai-tab-buyers').textContent = tr.ai_tab_buyers;
+  $('ai-tab-scam').textContent = tr.ai_tab_scam;
+  $('runAiBtn').textContent = tr.run_ai_btn; $('ai-thinking2').textContent = tr.ai_thinking;
+  $('aiInput').placeholder = tr.ai_input_ph[aiMode] || '';
+  $('aiInput2').placeholder = tr.ai_input2_ph;
+  // Leads
+  $('leads-title').textContent = tr.leads_title; $('leads-sub').textContent = tr.leads_sub;
+  $('leads-ct').textContent = tr.leads_ct; $('leadInput').placeholder = tr.leads_search_ph;
+  $('lead-search-btn').textContent = tr.leads_search_btn; $('leads-searching').textContent = tr.leads_searching;
+  $('export-leads-btn').textContent = tr.export_leads; $('outreach-ct').textContent = tr.outreach_ct;
+  if($('copy-email-btn')) $('copy-email-btn').textContent = tr.copy_email;
+  // Expired
+  $('exp-title').textContent = tr.exp_title; $('exp-sub').textContent = tr.exp_sub;
+  $('exp-ct').textContent = tr.exp_ct; $('exp-tld-lbl').textContent = tr.exp_tld;
+  $('exp-da-lbl').textContent = tr.exp_da; $('exp-kw-lbl').textContent = tr.exp_kw;
+  $('exp-search-btn').textContent = tr.exp_search_btn; $('exp-searching').textContent = tr.exp_searching;
+  $('exp-export-btn').textContent = tr.exp_export; $('exp-results-ct').textContent = tr.exp_results_ct;
+  // Maps
+  $('maps-title').textContent = tr.maps_title; $('maps-sub').textContent = tr.maps_sub;
+  $('maps-ct').textContent = tr.maps_ct; $('bizType').placeholder = tr.maps_biz_ph;
+  $('bizCity').placeholder = tr.maps_city_ph; $('maps-search-btn').textContent = tr.maps_search_btn;
+  $('mapsDirectLink').textContent = tr.maps_link;
+  $('maps-searching').textContent = tr.maps_searching; $('maps-export-btn').textContent = tr.maps_export;
+  // Extractor
+  $('ext-title').textContent = tr.ext_title; $('ext-sub').textContent = tr.ext_sub;
+  $('ext-tip').textContent = tr.ext_tip; $('ext-ct').textContent = tr.ext_ct;
+  $('ext-url-lbl').textContent = tr.ext_url_lbl; $('ext-html-lbl').textContent = tr.ext_html_lbl;
+  $('ext-btn').textContent = tr.ext_btn; $('ext-extracting').textContent = tr.ext_extracting;
+  $('ext-emails-lbl').textContent = tr.ext_emails; $('ext-phones-lbl').textContent = tr.ext_phones;
+  $('ext-no-results').textContent = tr.ext_no_results; $('ext-export-btn').textContent = tr.ext_export;
+  // Chat
+  $('chat-title').textContent = tr.chat_title; $('chat-sub').textContent = tr.chat_sub;
+  $('chat-notice').textContent = tr.chat_notice; $('chat-welcome').textContent = tr.chat_welcome;
+  $('chatInput').placeholder = tr.chat_ph; $('chat-send-btn').textContent = tr.chat_send;
+  // Saved
+  $('saved-title').textContent = tr.saved_title; $('saved-sub').textContent = tr.saved_sub;
+  $('saved-ct').textContent = tr.saved_ct; $('saved-export-btn').textContent = tr.saved_export;
+  $('saved-empty-txt').textContent = tr.saved_empty; $('saved-empty-sub').textContent = tr.saved_empty_sub;
+  // Admin
+  $('admin-title').textContent = tr.admin_title; $('admin-sub').textContent = tr.admin_sub;
+  $('admin-gate-ct').textContent = tr.admin_gate_ct; $('admin-wrong-pass').textContent = tr.admin_wrong;
+  $('admin-pass-lbl').textContent = tr.admin_pass_lbl; $('admin-enter-btn').textContent = tr.admin_enter_btn;
+  $('admin-hint').innerHTML = `${tr.admin_hint} <strong>admin123</strong>`;
+  $('adm-users-lbl').textContent = tr.admin_users; $('adm-searches-lbl').textContent = tr.admin_searches;
+  $('adm-saved-lbl').textContent = tr.admin_saved; $('adm-ai-lbl').textContent = tr.admin_ai;
+  $('adm-users-title').textContent = tr.admin_users_title; $('adm-activity-title').textContent = tr.admin_activity;
+  $('adm-saved-title').textContent = tr.admin_saved_title; $('adm-logout-btn').textContent = tr.admin_logout;
+  // Login
+  $('lt').textContent = tr.lt; $('ls').textContent = tr.ls; $('gg').textContent = tr.gg;
+  $('em-lbl').textContent = tr.em_lbl; $('pw-lbl').textContent = tr.pw_lbl;
+  $('si-btn').textContent = tr.si_btn; $('no-acc').innerHTML = `${tr.no_acc} <a href="#" style="color:var(--red);font-weight:600" onclick="event.preventDefault();showSignup()">${tr.su_lnk}</a>`;
+  // Fab
+  const fabWelcome = $('fab-welcome');
+  if(fabWelcome) fabWelcome.textContent = tr.fab_welcome;
+  $('fabInput').placeholder = tr.fab_ph;
+  $('fab-send-btn').textContent = tr.dir==='rtl'?'←':'→';
+  renderSaved();
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────────────
+function goPage(page) {
+  if(page !== currentPage) pageHistory.push(currentPage);
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = $('page-'+page);
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
+  const ni = $('ni-'+page);
+  if(ni) ni.classList.add('on');
+  window.scrollTo(0,0);
+  if(page === 'saved') renderSaved();
+  if(page === 'admin' && adminUnlocked) { hide('adminGate'); show('adminDashboard'); renderAdminDashboard(); }
+}
+
+function goBack() {
+  const prev = pageHistory.pop() || 'dashboard';
+  currentPage = '';
+  goPage(prev);
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────
+function loginGoogle() {
+  const names = ['Alex Johnson','Sarah Williams','David Chen','Emma Brown','Michael Davis'];
+  const emails = ['alex@gmail.com','sarah@gmail.com','david@gmail.com','emma@gmail.com','michael@gmail.com'];
+  const i = rnd(0,4);
+  currentUser = { name:names[i], email:emails[i], avatar:names[i][0], provider:'google' };
+  completeLogin();
+}
+
+function doLogin() {
+  const email = $('loginEmail').value.trim();
+  const pass = $('loginPass').value.trim();
+  if(!email || !pass) { showLoginErr('Please fill in all fields.'); return; }
+  if(pass.length < 4) { showLoginErr('Password must be at least 4 characters.'); return; }
+  const name = email.split('@')[0];
+  currentUser = { name: name.charAt(0).toUpperCase()+name.slice(1), email, avatar:name[0].toUpperCase(), provider:'email' };
+  completeLogin();
+}
+
+function showSignup() {
+  $('si-btn').textContent = t().si_btn.replace('Sign In','Sign Up').replace('Se Connecter','S\'inscrire').replace('تسجيل الدخول','إنشاء حساب');
+  $('no-acc').innerHTML = `<span id="have-acc">${currentLang==='ar'?'لديك حساب؟':currentLang==='fr'?'Déjà un compte ?':'Already have an account?'}</span> <a href="#" style="color:var(--red);font-weight:600" onclick="event.preventDefault();applyTranslations()">${currentLang==='ar'?'تسجيل الدخول':currentLang==='fr'?'Se connecter':'Sign In'}</a>`;
+}
+
+function showLoginErr(msg) {
+  $('loginErr').textContent = msg;
+  $('loginErr').style.display = 'block';
+  setTimeout(() => { $('loginErr').style.display='none'; }, 3000);
+}
+
+function completeLogin() {
+  hide('loginOverlay');
+  $('userNm').textContent = currentUser.name;
+  $('userAv').textContent = currentUser.avatar;
+  $('userEm').textContent = t().logout;
+  // save user to admin list
+  let users = JSON.parse(localStorage.getItem('df_users')||'[]');
+  if(!users.find(u=>u.email===currentUser.email)) {
+    users.push({...currentUser, joined: new Date().toLocaleDateString()});
+    localStorage.setItem('df_users', JSON.stringify(users));
+  }
+}
+
+function logOut() {
+  currentUser = null;
+  $('loginEmail').value=''; $('loginPass').value='';
+  showFlex('loginOverlay');
+}
+
+// ── CLAUDE API ──────────────────────────────────────────────────────
+async function callClaude(prompt, system='') {
+  const sys = system || `You are DomainForge AI, a strict domain investment expert. 
+RULES: ONLY answer questions about domain names, domain investing, WHOIS, DNS, SEO for domains, domain valuation, buying/selling domains, expired domains, cold outreach for domain sales.
+If asked about ANYTHING else, politely decline and redirect to domain topics.
+Respond in the same language as the user (Arabic, French, or English). Be concise and practical.`;
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:sys, messages:[{role:'user',content:prompt}] })
+  });
+  const d = await res.json();
+  return d.content?.[0]?.text || '';
+}
+
+// ── DOMAIN TOOLS ───────────────────────────────────────────────────
+let toolWhois=null, toolDNS=null, toolSEO=null;
+
+async function analyzeDomain() {
+  const domain = $('domainInput').value.trim();
+  if(!domain) return;
+  lastAnalyzedDomain = domain;
+  $('analyzeBtn').disabled = true;
+  $('analyzeBtn').textContent = t().analyzing;
+  show('toolsLoading'); hide('toolsResult');
+  await sleep(900);
+
+  // Generate mock data
+  const age = rnd(1,15);
+  toolWhois = {
+    Domain: domain, Registrar: pick(['GoDaddy','Namecheap','Cloudflare','Name.com','Dynadot']),
+    Created: new Date(Date.now()-age*365*24*3.6e6).toISOString().split('T')[0],
+    Expires: new Date(Date.now()+rnd(1,3)*365*24*3.6e6).toISOString().split('T')[0],
+    Age: `${age} years`,
+    Country: pick(['US','CA','GB','DE','AU','FR','AE']),
+    DNSSEC: pick(['Enabled','Disabled']),
+    Privacy: pick(['Protected','Public']),
+    Status: 'clientTransferProhibited',
+    Nameservers: 'ns1.cloudflare.com, ns2.cloudflare.com'
+  };
+  const da = rnd(12,82);
+  toolSEO = { DA:da, PA:Math.max(da-5,5), Backlinks:rnd(50,50000).toLocaleString(),
+    'Referring Domains':rnd(10,5000).toLocaleString(), 'Organic Traffic':`${rnd(1,500)}K/mo`,
+    Keywords:rnd(100,15000).toLocaleString(), 'Spam Score':`${rnd(0,15)}%`, 'Trust Flow':rnd(10,70) };
+  toolDNS = [
+    {type:'A',value:`${rnd(1,254)}.${rnd(1,254)}.${rnd(1,254)}.${rnd(1,254)}`,ttl:'3600'},
+    {type:'AAAA',value:'2606:4700:4700::1111',ttl:'3600'},
+    {type:'MX',value:`mail.${domain} (Priority 10)`,ttl:'3600'},
+    {type:'TXT',value:`v=spf1 include:_spf.${domain} ~all`,ttl:'3600'},
+    {type:'NS',value:'ns1.cloudflare.com',ttl:'86400'},
+    {type:'CNAME',value:`www → ${domain}`,ttl:'3600'}
+  ];
+  lastAnalyzedData = { whois:toolWhois, seo:toolSEO };
+
+  // Render Overview
+  const score = Math.min(Math.floor(da*0.75+rnd(10,28)),99);
+  const circ = 2*Math.PI*34;
+  const offset = circ - (score/100)*circ;
+  $('scoreCircle').setAttribute('stroke-dasharray', circ);
+  $('scoreCircle').setAttribute('stroke-dashoffset', offset);
+  $('scoreNum').textContent = score;
+  $('scoreTitle').textContent = `${t().score_title} — ${domain}`;
+  const scoreData = [
+    {l:t().brandability, v:Math.min(Math.floor(da*0.9+rnd(5,15)),100), c:'#dc2626'},
+    {l:t().seo_value, v:da, c:'#0d9488'},
+    {l:t().keyword, v:rnd(45,90), c:'#d97706'},
+    {l:t().resale, v:Math.min(da+rnd(5,20),100), c:'#2563eb'}
+  ];
+  $('scoreRows').innerHTML = scoreData.map(r=>`
+    <div class="score-row-item">
+      <span class="sc-lbl">${r.l}</span>
+      <div class="sc-bg"><div class="sc-fill" style="width:${r.v}%;background:${r.c}"></div></div>
+      <span class="sc-n" style="color:${r.c}">${r.v}</span>
+    </div>`).join('');
+
+  // Overview grid
+  $('overviewGrid').innerHTML = [
+    {l:t().age, v:toolWhois.Age, c:'var(--teal)'},
+    {l:t().registrar, v:toolWhois.Registrar, c:''},
+    {l:t().expires, v:toolWhois.Expires, c:''},
+    {l:t().da, v:`${da}/100`, c:'var(--red)'},
+    {l:t().backlinks, v:toolSEO.Backlinks, c:'var(--blue)'},
+    {l:t().dnssec, v:toolWhois.DNSSEC, c:toolWhois.DNSSEC==='Enabled'?'var(--teal)':'var(--gray)'}
+  ].map(r=>`<div class="ri"><div class="ri-l">${r.l}</div><div class="ri-v" style="${r.c?'color:'+r.c:''}">${r.v}</div></div>`).join('');
+
+  // WHOIS grid
+  $('whoisGrid').innerHTML = Object.entries(toolWhois).map(([k,v])=>
+    `<div class="ri"><div class="ri-l">${k}</div><div class="ri-v mono" style="font-size:12px">${v}</div></div>`).join('');
+
+  // DNS table
+  $('dnsBody').innerHTML = toolDNS.map(r=>`
+    <tr><td><span class="tag tag-red">${r.type}</span></td>
+    <td class="mono">${r.value}</td>
+    <td class="mono" style="color:var(--gray)">${r.ttl}s</td></tr>`).join('');
+
+  // SEO grid
+  $('seoGrid').innerHTML = Object.entries(toolSEO).map(([k,v])=>
+    `<div class="ri"><div class="ri-l">${k}</div><div class="ri-v" style="${k==='DA'||k==='PA'?'color:var(--red)':''}">${v}</div></div>`).join('');
+
+  hide('toolsLoading');
+  show('toolsResult'); show('aiAnalysisBox');
+  $('analyzeBtn').disabled=false; $('analyzeBtn').textContent=t().analyze_btn;
+  setToolTab(document.querySelector('#page-tools .tab'), 'tt-overview');
+
+  // AI Analysis async
+  show('aiLoading'); $('aiAnalysisTxt').textContent='';
+  try {
+    const res = await callClaude(`Analyze domain "${domain}" for investment potential. WHOIS: age ${toolWhois.Age}, registrar ${toolWhois.Registrar}, country ${toolWhois.Country}. SEO: DA ${da}, Backlinks ${toolSEO.Backlinks}, traffic ${toolSEO['Organic Traffic']}. Give: 1) Investment score /100  2) Key strengths (3 points)  3) Main risks (2 points)  4) Estimated market value range  5) Best buyer types  6) One-line verdict.`);
+    $('aiAnalysisTxt').textContent = res;
+  } catch { $('aiAnalysisTxt').textContent='AI analysis unavailable. Please check your connection.'; }
+  hide('aiLoading');
+}
+
+function setToolTab(el, tabId) {
+  document.querySelectorAll('#page-tools .tab').forEach(t=>t.classList.remove('on'));
+  if(el) el.classList.add('on');
+  ['tt-overview','tt-whois','tt-dns','tt-seo','tt-avail'].forEach(id=>{
+    const e=$(id); if(e) e.style.display = id===tabId?'':'none';
+  });
+}
+
+async function checkAvail() {
+  if(!$('domainInput').value.trim()) return;
+  show('availLoading'); hide('availTable');
+  const sld = $('domainInput').value.trim().split('.')[0];
+  await sleep(700);
+  const tlds=['.com','.io','.co','.ai','.app','.net','.org','.dev','.tech','.xyz'];
+  $('availBody').innerHTML = tlds.map(tl=>{
+    const avail = Math.random()>0.45;
+    const price = `$${(Math.random()*25+7).toFixed(2)}/yr`;
+    return `<tr>
+      <td class="mono" style="color:var(--red2);font-weight:600">${sld}${tl}</td>
+      <td><span class="tag ${avail?'tag-green':'tag-gray'}">${avail?t().available:t().taken}</span></td>
+      <td style="color:var(--teal);font-weight:700">${avail?price:'—'}</td>
+      <td>${avail?`<button class="btn btn-red btn-xs">${t().register||'Register'}</button>`:''}</td>
+    </tr>`;
+  }).join('');
+  hide('availLoading'); show('availTable');
+}
+
+function saveDomainFromTool() {
+  const domain = $('domainInput').value.trim();
+  if(!domain) return;
+  const da = toolSEO ? toolSEO.DA : rnd(20,70);
+  const est = `$${(Math.random()*20+1).toFixed(1)}K`;
+  const entry = { domain, da, est, age: toolWhois?toolWhois.Age:'N/A', saved:new Date().toLocaleDateString() };
+  if(!savedDomains.find(d=>d.domain===domain)) {
+    savedDomains.push(entry);
+    localStorage.setItem('df_saved', JSON.stringify(savedDomains));
+    updateSavedCount();
+  }
+  const btn=$('save-domain-btn');
+  btn.textContent='✅ '+t().saved_ok||'Saved!';
+  btn.classList.replace('btn-out','btn-green');
+  setTimeout(()=>{ btn.textContent=t().save_btn; btn.classList.replace('btn-green','btn-out'); },2000);
+}
+
+// ── AI ANALYSIS ────────────────────────────────────────────────────
+function setAiMode(el, mode) {
+  aiMode = mode;
+  document.querySelectorAll('#page-ai .tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  $('aiInput').placeholder = t().ai_input_ph[mode]||'';
+  $('aiInput2').style.display = mode==='email_gen'?'':'none';
+  hide('aiPageResult'); hide('aiPageLoading');
+}
+
+async function runAI() {
+  const inp = $('aiInput').value.trim();
+  if(!inp) return;
+  $('runAiBtn').disabled=true; $('runAiBtn').textContent=t().ai_thinking;
+  show('aiPageLoading'); hide('aiPageResult');
+  const inp2 = $('aiInput2').value.trim();
+  const prompts = {
+    evaluate:`Evaluate domain "${inp}" as an investment: give score /100, 3 strengths, 2 risks, estimated value range, best buyer types, one-line verdict.`,
+    ideas:`Generate 10 creative brandable domain ideas for "${inp}". For each: domain name, why it's great, estimated value. Numbered list.`,
+    email_gen:`Write a professional cold outreach email (under 130 words) to sell domain "${inp}" to a ${inp2||'tech'} industry buyer. Include subject line. Be compelling and brief.`,
+    buyers:`For domain "${inp}", suggest 5 ideal buyer company types: why they'd want it, estimated price they'd pay, how to find them.`,
+    scam:`Analyze domain "${inp}" for spam/scam risk. Check naming patterns, phishing signals, trademark conflicts. Give risk score 0-100 (0=safe) with explanation.`
+  };
+  try {
+    const res = await callClaude(prompts[aiMode]);
+    $('aiPageTxt').textContent = res;
+    show('aiPageResult');
+  } catch { $('aiPageTxt').textContent='AI connection error. Please try again.'; show('aiPageResult'); }
+  hide('aiPageLoading');
+  $('runAiBtn').disabled=false; $('runAiBtn').textContent=t().run_ai_btn;
+}
+
+// ── LEAD FINDER ────────────────────────────────────────────────────
+let leadsData = [];
+async function findLeads() {
+  const domain = $('leadInput').value.trim();
+  if(!domain) return;
+  $('lead-search-btn').disabled=true;
+  show('leadsLoading'); hide('leadsResult'); hide('outreachResult');
+  await sleep(1100);
+  const fns=['Alex','Sarah','Michael','Jessica','David','Emily','James','Robert','Jennifer','William'];
+  const lns=['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Wilson','Taylor'];
+  const titles=['CEO','CTO','Head of Marketing','VP Sales','Co-Founder','Director','CMO','Product Lead','CFO'];
+  const d = domain.replace(/^https?:\/\//,'').split('/')[0];
+  leadsData = Array.from({length:rnd(4,7)},()=>{
+    const fn=pick(fns),ln=pick(lns);
+    const em=pick([`${fn.toLowerCase()}@${d}`,`${fn[0].toLowerCase()}${ln.toLowerCase()}@${d}`,`${fn.toLowerCase()}.${ln.toLowerCase()}@${d}`]);
+    return {name:`${fn} ${ln}`,email:em,phone:`+1 (${rnd(200,999)}) ${rnd(200,999)}-${rnd(1000,9999)}`,title:pick(titles),conf:rnd(52,96),src:pick(['LinkedIn','Web','Crunchbase','AngelList','Press'])};
+  });
+  $('leadsCt').textContent = `${t().found||'Found'} ${leadsData.length} ${t().contacts||'contacts for'} ${domain}`;
+  $('leadsBody').innerHTML = leadsData.map((l,i)=>`
+    <tr>
+      <td style="font-weight:600">${l.name}</td>
+      <td class="mono" style="color:var(--red2)">${l.email}</td>
+      <td class="mono" style="color:var(--blue)">${l.phone}</td>
+      <td style="color:var(--gray)">${l.title}</td>
+      <td><span class="tag ${l.conf>80?'tag-green':l.conf>65?'tag-gold':'tag-red'}">${l.conf}%</span></td>
+      <td><button class="btn btn-out btn-xs" onclick="genOutreach(${i})">✍️</button></td>
+    </tr>`).join('');
+  hide('leadsLoading'); show('leadsResult');
+  $('lead-search-btn').disabled=false;
+}
+
+async function genOutreach(i) {
+  const lead = leadsData[i];
+  const domain = $('leadInput').value.trim();
+  show('outreachResult'); show('outreachLoading'); hide('outreachBox');
+  try {
+    const res = await callClaude(`Write a cold outreach email to ${lead.name} (${lead.title}) at ${domain} to sell them a premium domain. Under 120 words. Subject + body. Compelling and concise.`,
+      'You are a domain sales expert. Write persuasive, brief cold emails. Never mention anything outside domain sales context.');
+    $('outreachTxt').textContent = res;
+    hide('outreachLoading'); show('outreachBox');
+  } catch { $('outreachTxt').textContent='Error generating email.'; hide('outreachLoading'); show('outreachBox'); }
+}
+
+function exportLeadsCSV() {
+  const rows=[['Name','Email','Phone','Title','Confidence','Source'],...leadsData.map(l=>[l.name,l.email,l.phone,l.title,l.conf+'%',l.src])];
+  downloadCSV(rows,'leads.csv');
+}
+
+// ── EXPIRED DOMAINS ─────────────────────────────────────────────────
+let expiredData = [];
+async function searchExpired() {
+  $('exp-search-btn').disabled=true;
+  show('expLoading'); hide('expResult');
+  await sleep(950);
+  const kws=$('expKw').value.trim()?[$('expKw').value.trim()]:['tech','health','ai','crypto','saas','green','data','cloud'];
+  const sfx=['hub','pro','lab','vault','stack','base','forge','link','flow','track'];
+  const tld=$('expTld').value, minDA=parseInt($('expDA').value)||20;
+  expiredData = Array.from({length:8},()=>{
+    const k=pick(kws),s=pick(sfx),da=minDA+rnd(0,45);
+    return {domain:`${k}${s}${tld}`,da,age:`${rnd(2,12)}y`,backlinks:rnd(80,8000).toLocaleString(),keywords:rnd(50,5000).toLocaleString(),score:rnd(62,97),est:`$${(Math.random()*20+0.5).toFixed(1)}K`,dropped:`${rnd(1,12)}h ago`};
+  });
+  $('expBody').innerHTML = expiredData.map((r,i)=>`
+    <tr>
+      <td class="mono" style="color:var(--red2);font-weight:700">${r.domain}</td>
+      <td style="font-weight:700;color:${r.da>50?'var(--teal)':r.da>30?'var(--gold)':'var(--red)'}">${r.da}</td>
+      <td style="color:var(--gray)">${r.age}</td>
+      <td>${r.backlinks}</td>
+      <td><span class="tag ${r.score>85?'tag-green':r.score>70?'tag-gold':'tag-red'}">${r.score}/100</span></td>
+      <td style="color:var(--teal);font-weight:700">${r.est}</td>
+      <td style="color:var(--gray);font-size:11px">${r.dropped}</td>
+      <td style="display:flex;gap:5px;flex-wrap:nowrap">
+        <button class="btn btn-red btn-xs">${t().register||'Register'}</button>
+        <button class="btn btn-out btn-xs" onclick="expAI('${r.domain}',${i})">AI</button>
+      </td>
+    </tr>
+    <tr id="expai-${i}" style="display:none">
+      <td colspan="8" style="padding:0 12px 12px">
+        <div class="ai-box"><div class="ai-hd">🤖 Claude</div><div class="ai-txt" id="expai-txt-${i}"></div></div>
+      </td>
+    </tr>`).join('');
+  hide('expLoading'); show('expResult');
+  $('exp-search-btn').disabled=false;
+}
+
+async function expAI(domain,i) {
+  $(`expai-${i}`).style.display='';
+  $(`expai-txt-${i}`).textContent='Loading...';
+  try {
+    const res = await callClaude(`Quick analysis of expired domain "${domain}": worth buying? Give 3 bullet points — value assessment, main risk, recommended action.`);
+    $(`expai-txt-${i}`).textContent=res;
+  } catch { $(`expai-txt-${i}`).textContent='AI unavailable.'; }
+}
+
+function exportExpiredCSV() {
+  const rows=[['Domain','DA','Age','Backlinks','AI Score','Est Value','Dropped'],...expiredData.map(r=>[r.domain,r.da,r.age,r.backlinks,r.score,r.est,r.dropped])];
+  downloadCSV(rows,'expired_domains.csv');
+}
+
+// ── GOOGLE MAPS ─────────────────────────────────────────────────────
+let mapsData = [];
+async function searchBiz() {
+  const bizType=$('bizType').value.trim(), city=$('bizCity').value.trim();
+  if(!bizType) return;
+  $('maps-search-btn').disabled=true;
+  // Update direct maps link
+  $('mapsDirectLink').href=`https://www.google.com/maps/search/${encodeURIComponent(bizType+' '+city)}`;
+  show('mapsLoading'); hide('mapsResult');
+  await sleep(900);
+  const suffs=['Solutions','Group','& Associates','International','Consulting','Experts','Services'];
+  mapsData=Array.from({length:6},(_,i)=>{
+    const suf=suffs[i%suffs.length],name=`${bizType} ${suf}`;
+    const slug=name.toLowerCase().replace(/[^a-z]/g,'');
+    return {name,phone:`+1 (${rnd(200,999)}) ${rnd(200,999)}-${rnd(1000,9999)}`,
+      website:`${slug}.com`,email:`info@${slug}.com`,
+      rating:(Math.random()*1.5+3.5).toFixed(1),
+      mapsUrl:`https://www.google.com/maps/search/${encodeURIComponent(name+' '+city)}`};
+  });
+  $('mapsBody').innerHTML=mapsData.map(b=>`
+    <tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td class="mono" style="color:var(--blue)">${b.phone}</td>
+      <td class="mono" style="color:var(--red2)">${b.website}</td>
+      <td class="mono" style="font-size:11.5px;color:var(--teal)">${b.email}</td>
+      <td><span class="tag tag-gold">⭐ ${b.rating}</span></td>
+      <td style="display:flex;gap:5px">
+        <button class="btn btn-out btn-xs">${t().add_lead||'Add'}</button>
+        <a href="${b.mapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-blue btn-xs" style="text-decoration:none">🗺️</a>
+      </td>
+    </tr>`).join('');
+  hide('mapsLoading'); show('mapsResult');
+  $('maps-search-btn').disabled=false;
+}
+
+function exportMapsCSV() {
+  const rows=[['Business','Phone','Website','Email','Rating'],...mapsData.map(b=>[b.name,b.phone,b.website,b.email,b.rating])];
+  downloadCSV(rows,'maps_leads.csv');
+}
+
+// ── PAGE EXTRACTOR ──────────────────────────────────────────────────
+let extractedEmails=[], extractedPhones=[];
+async function runExtractor() {
+  const url=$('extUrl').value.trim(), html=$('extHtml').value.trim();
+  if(!url&&!html) return;
+  $('ext-btn').disabled=true;
+  show('extLoading'); hide('extResult');
+  await sleep(700);
+
+  const emailRx=/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
+  const phoneRx=/(?:\+?[\d\s\-().]{7,20})/g;
+
+  let found_emails=[], found_phones=[];
+
+  if(html) {
+    found_emails=[...new Set(html.match(emailRx)||[])];
+    const raw=(html.match(phoneRx)||[]);
+    found_phones=[...new Set(raw.filter(p=>p.replace(/\D/g,'').length>=7&&p.replace(/\D/g,'').length<=15))];
+  } else if(url) {
+    // Simulate from URL domain
+    const domain=url.replace(/^https?:\/\//,'').split('/')[0];
+    const sld=domain.split('.')[0];
+    found_emails=[`info@${domain}`,`contact@${domain}`,`hello@${domain}`,`support@${domain}`,`sales@${domain}`,`${sld}@gmail.com`];
+    found_phones=[`+1 (${rnd(200,999)}) ${rnd(200,999)}-${rnd(1000,9999)}`,`+44 20 ${rnd(1000,9999)} ${rnd(1000,9999)}`,`(${rnd(200,999)}) ${rnd(200,999)}-${rnd(1000,9999)}`];
+  }
+
+  extractedEmails=found_emails; extractedPhones=found_phones;
+  $('emailCount').textContent=found_emails.length;
+  $('phoneCount').textContent=found_phones.length;
+
+  if(found_emails.length>0){
+    $('emailList').innerHTML=found_emails.map(e=>`<div class="ex-item">📧 <span style="flex:1">${e}</span><button class="cbtn" onclick="navigator.clipboard.writeText('${e}')">📋</button></div>`).join('');
+    show('extEmailSection');
+  } else hide('extEmailSection');
+
+  if(found_phones.length>0){
+    $('phoneList').innerHTML=found_phones.map(p=>`<div class="ex-item" style="color:var(--blue)">📞 <span style="flex:1">${p}</span><button class="cbtn" style="background:var(--blue)" onclick="navigator.clipboard.writeText('${p}')">📋</button></div>`).join('');
+    show('extPhoneSection');
+  } else hide('extPhoneSection');
+
+  if(found_emails.length===0&&found_phones.length===0) show('extEmpty'); else hide('extEmpty');
+
+  if(found_emails.length>0||found_phones.length>0){
+    $('extSuccess').textContent=`✅ Extracted ${found_emails.length} emails and ${found_phones.length} phone numbers`;
+    show('extSuccess');
+  } else hide('extSuccess');
+
+  hide('extLoading'); show('extResult');
+  $('ext-btn').disabled=false;
+}
+
+function exportExtractorCSV() {
+  const rows=[['Type','Value'],...extractedEmails.map(e=>['Email',e]),...extractedPhones.map(p=>['Phone',p])];
+  downloadCSV(rows,'extracted_contacts.csv');
+}
+
+// ── AI CHAT ────────────────────────────────────────────────────────
+async function sendChat() {
+  const input=$('chatInput'), msg=input.value.trim();
+  if(!msg) return;
+  input.value=''; input.disabled=true;
+  $('chat-send-btn').disabled=true;
+  appendMsg('chatMsgs','user',msg);
+  appendMsg('chatMsgs','thinking','...');
+  try {
+    const res=await callClaude(msg);
+    removeThinking('chatMsgs'); appendMsg('chatMsgs','bot',res);
+  } catch { removeThinking('chatMsgs'); appendMsg('chatMsgs','bot','Connection error. Please try again.'); }
+  input.disabled=false; $('chat-send-btn').disabled=false; input.focus();
+}
+
+// ── FLOATING CHATBOT ────────────────────────────────────────────────
+function toggleFab() {
+  fabOpen=!fabOpen;
+  $('fabWin').classList.toggle('open',fabOpen);
+  if(fabOpen) $('fabInput').focus();
+}
+
+async function sendFab() {
+  const input=$('fabInput'),msg=input.value.trim();
+  if(!msg) return;
+  input.value=''; input.disabled=true; $('fab-send-btn').disabled=true;
+  appendMsg('fabMsgs','user',msg,true);
+  appendMsg('fabMsgs','thinking','...',true);
+  try {
+    const res=await callClaude(msg);
+    removeThinking('fabMsgs'); appendMsg('fabMsgs','bot',res,true);
+  } catch { removeThinking('fabMsgs'); appendMsg('fabMsgs','bot','Error. Try again.',true); }
+  input.disabled=false; $('fab-send-btn').disabled=false;
+}
+
+function appendMsg(containerId,role,text,small=false) {
+  const c=$(containerId);
+  const av = small ? `<div class="bot-av" style="width:26px;height:26px;font-size:12px">🤖</div>` : `<div class="bot-av">🤖</div>`;
+  const wrap = document.createElement('div');
+  wrap.className=`msg-wrap${role==='user'?' u':''}`;
+  if(role==='thinking') wrap.id='thinkingMsg';
+  if(role==='bot'||role==='thinking') wrap.innerHTML=`${av}<div class="bbl b">${text}</div>`;
+  else wrap.innerHTML=`<div class="bbl u">${text}</div>`;
+  c.appendChild(wrap);
+  c.scrollTop=c.scrollHeight;
+}
+
+function removeThinking(containerId) {
+  const el=$(containerId)?.querySelector('#thinkingMsg');
+  if(el) el.remove();
+}
+
+// ── SAVED DOMAINS ──────────────────────────────────────────────────
+function renderSaved() {
+  const list=$('savedList'), empty=$('savedEmpty');
+  updateSavedCount();
+  if(savedDomains.length===0){ list.innerHTML=''; show('savedEmpty'); return; }
+  hide('savedEmpty');
+  list.innerHTML=`<div class="tbl-wrap"><table>
+    <thead><tr><th>Domain</th><th>DA</th><th>Age</th><th>Est. Value</th><th>Saved</th><th></th></tr></thead>
+    <tbody>${savedDomains.map((d,i)=>`
+      <tr>
+        <td class="mono" style="color:var(--red2);font-weight:700">${d.domain}</td>
+        <td style="font-weight:700;color:var(--teal)">${d.da||'—'}</td>
+        <td>${d.age||'—'}</td>
+        <td style="color:var(--teal);font-weight:700">${d.est||'—'}</td>
+        <td style="color:var(--gray);font-size:11px">${d.saved||'—'}</td>
+        <td style="display:flex;gap:5px">
+          <button class="btn btn-out btn-xs" onclick="loadSavedDomain('${d.domain}')">${t().saved_analyze||'Analyze'}</button>
+          <button class="btn btn-gray btn-xs" onclick="removeSaved(${i})">${t().saved_remove||'Remove'}</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+function loadSavedDomain(domain) {
+  $('domainInput').value=domain;
+  goPage('tools');
+  setTimeout(analyzeDomain,300);
+}
+
+function removeSaved(i) {
+  savedDomains.splice(i,1);
+  localStorage.setItem('df_saved',JSON.stringify(savedDomains));
+  renderSaved(); updateSavedCount();
+}
+
+function updateSavedCount() {
+  const sc=$('savedCount'); if(sc) sc.textContent=savedDomains.length;
+  const admSaved=$('adm-saved'); if(admSaved) admSaved.textContent=savedDomains.length;
+}
+
+function exportSavedCSV() {
+  if(!savedDomains.length) return;
+  const rows=[['Domain','DA','Age','Est Value','Saved Date'],...savedDomains.map(d=>[d.domain,d.da,d.age,d.est,d.saved])];
+  downloadCSV(rows,'saved_domains.csv');
+}
+
+// ── ADMIN ──────────────────────────────────────────────────────────
+function checkAdmin() {
+  const pass=$('adminPassInput').value;
+  if(pass==='admin123') {
+    adminUnlocked=true; hide('adminGate'); show('adminDashboard'); renderAdminDashboard();
+    $('adminErr').style.display='none';
+  } else {
+    $('adminErr').style.display='flex';
+    $('adminPassInput').value='';
+  }
+}
+
+function lockAdmin() { adminUnlocked=false; hide('adminDashboard'); show('adminGate'); $('adminPassInput').value=''; }
+
+function renderAdminDashboard() {
+  updateSavedCount();
+  $('adm-saved').textContent=savedDomains.length;
+  // Users
+  const users=JSON.parse(localStorage.getItem('df_users')||'[]');
+  if(currentUser&&!users.find(u=>u.email===currentUser.email)) users.push({...currentUser,joined:new Date().toLocaleDateString()});
+  $('adm-users').textContent=users.length;
+  $('adminUsersBody').innerHTML=users.length===0
+    ?`<tr><td colspan="4" style="text-align:center;color:var(--gray)">No registered users</td></tr>`
+    :users.map(u=>`<tr>
+      <td style="font-weight:600">${u.name}</td>
+      <td class="mono" style="font-size:11.5px">${u.email}</td>
+      <td style="color:var(--gray)">${u.joined||'—'}</td>
+      <td><span class="tag tag-green">Active</span></td>
+    </tr>`).join('');
+  // Activity
+  const acts=[`🔍 Domain analyzed: openai.com`,`📧 Leads found: stripe.com (6 contacts)`,`🤖 AI analysis run: healthtech.ai`,`⏰ Expired domains search: .io, DA>30`,`🔎 Page extractor used on apple.com`];
+  $('adminActivity').innerHTML=acts.map(a=>`<div class="dr" style="cursor:default"><span style="font-size:13px">${a}</span></div>`).join('');
+  // Saved domains
+  $('adminSavedDomains').innerHTML=savedDomains.length===0
+    ?`<div style="color:var(--gray);font-size:13px;padding:12px 0">No domains saved yet.</div>`
+    :savedDomains.map(d=>`<div class="dr" style="cursor:default">
+      <span class="dr-n">${d.domain}</span>
+      <span class="tag tag-teal">DA ${d.da}</span>
+      <span class="dr-v">${d.est}</span>
+    </div>`).join('');
+}
+
+// ── CSV EXPORT ─────────────────────────────────────────────────────
+function downloadCSV(rows,filename) {
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── UTILS ──────────────────────────────────────────────────────────
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+// ── INIT ───────────────────────────────────────────────────────────
+window.onload = function() {
+  applyTranslations();
+  updateSavedCount();
+  // Show login
+  showFlex('loginOverlay');
+};
+</script>
+</body>
+</html>
